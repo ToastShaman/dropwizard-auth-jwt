@@ -25,9 +25,9 @@ public abstract class BaseHmacSigner {
     }
 
     private void initialiseKey(byte[] key) {
-        this.signingKey = new SecretKeySpec(secret, getHmacAlgorithm());
+        this.signingKey = new SecretKeySpec(secret, getSignatureAlgorithm());
         try {
-            this.hmac = Mac.getInstance(getHmacAlgorithm());
+            this.hmac = Mac.getInstance(getSignatureAlgorithm());
         } catch (NoSuchAlgorithmException e) {
             throw new JsonWebTokenException(e.getMessage(), e);
         }
@@ -39,7 +39,7 @@ public abstract class BaseHmacSigner {
         }
     }
 
-    abstract String getHmacAlgorithm();
+    abstract String getSignatureAlgorithm();
 
-    String encode(byte[] signature) { return BaseEncoding.base64Url().omitPadding().encode(signature); }
+    String toBase64(byte[] signature) { return BaseEncoding.base64Url().omitPadding().encode(signature); }
 }
