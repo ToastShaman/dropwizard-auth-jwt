@@ -1,11 +1,9 @@
 package com.github.toastshaman.dropwizard.auth.jwt.verifier;
 
-import com.github.toastshaman.dropwizard.auth.jwt.model.JWTToken;
-import com.github.toastshaman.dropwizard.auth.jwt.parser.DefaultJWTTokenParser;
+import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
+import com.github.toastshaman.dropwizard.auth.jwt.parser.DefaultJWTParser;
 import com.google.common.io.BaseEncoding;
 import org.junit.Test;
-
-import java.nio.charset.Charset;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -22,7 +20,7 @@ public class HmacSHA256SignatureVerifierTest {
 
         final byte[] key = decode("AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow");
 
-        JWTToken token = new DefaultJWTTokenParser().parse(encodedToken);
+        JsonWebToken token = new DefaultJWTParser().parse(encodedToken);
 
         HmacSHA256SignatureVerifier verifier = new HmacSHA256SignatureVerifier(key);
 

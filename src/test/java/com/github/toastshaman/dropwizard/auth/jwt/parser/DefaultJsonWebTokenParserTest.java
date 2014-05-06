@@ -1,7 +1,6 @@
 package com.github.toastshaman.dropwizard.auth.jwt.parser;
 
-import com.github.toastshaman.dropwizard.auth.jwt.JWTTokenParser;
-import com.github.toastshaman.dropwizard.auth.jwt.model.JWTToken;
+import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -9,7 +8,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.notNullValue;
 
-public class DefaultJWTTokenParserTest {
+public class DefaultJsonWebTokenParserTest {
 
     @Test
     public void
@@ -20,7 +19,7 @@ public class DefaultJWTTokenParserTest {
                 + ".eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ"
                 + ".dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk";
 
-        JWTToken token = new DefaultJWTTokenParser().parse(encodedToken);
+        JsonWebToken token = new DefaultJWTParser().parse(encodedToken);
 
         assertThat(token.getHeader(), notNullValue());
         assertThat(token.getClaim(), notNullValue());

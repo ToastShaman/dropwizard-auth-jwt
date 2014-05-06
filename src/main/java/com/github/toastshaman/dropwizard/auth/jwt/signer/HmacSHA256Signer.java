@@ -1,10 +1,9 @@
 package com.github.toastshaman.dropwizard.auth.jwt.signer;
 
-import com.github.toastshaman.dropwizard.auth.jwt.JWTTokenSigner;
-import com.github.toastshaman.dropwizard.auth.jwt.exceptioons.JWTTokenException;
-import com.github.toastshaman.dropwizard.auth.jwt.model.JWTToken;
+import com.github.toastshaman.dropwizard.auth.jwt.JWTSigner;
+import com.github.toastshaman.dropwizard.auth.jwt.exceptioons.JsonWebTokenException;
+import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
 import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
 import com.google.common.io.BaseEncoding;
 
 import javax.crypto.Mac;
@@ -15,7 +14,7 @@ import java.security.NoSuchAlgorithmException;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class HmacSHA256Signer implements JWTTokenSigner {
+public class HmacSHA256Signer implements JWTSigner {
 
     private static final String HMAC_SHA256_ALG = "HmacSHA256";
 
@@ -35,13 +34,13 @@ public class HmacSHA256Signer implements JWTTokenSigner {
         try {
             this.hmac = Mac.getInstance(HMAC_SHA256_ALG);
         } catch (NoSuchAlgorithmException e) {
-            throw new JWTTokenException("cannot use HmacSHA256TokenParser on system without HmacSHA256 algorithm", e);
+            throw new JsonWebTokenException("cannot use HmacSHA256TokenParser on system without HmacSHA256 algorithm", e);
         }
 
         try {
             hmac.init(signingKey);
         } catch (InvalidKeyException e) {
-            throw new JWTTokenException(e.getMessage(), e);
+            throw new JsonWebTokenException(e.getMessage(), e);
         }
     }
 
@@ -49,7 +48,7 @@ public class HmacSHA256Signer implements JWTTokenSigner {
     public String algorithm() { return "HS256"; }
 
     @Override
-    public String sign(JWTToken token) {
+    public String sign(JsonWebToken token) {
         checkNotNull(token);
         final String jwtPayload = token.deserialize();
         final String signature = encode(hmac.doFinal(jwtPayload.getBytes(Charset.forName("UTF-8"))));

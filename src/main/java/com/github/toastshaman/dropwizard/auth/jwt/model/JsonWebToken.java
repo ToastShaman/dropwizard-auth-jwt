@@ -1,8 +1,8 @@
 package com.github.toastshaman.dropwizard.auth.jwt.model;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.toastshaman.dropwizard.auth.jwt.exceptioons.JWTTokenException;
-import com.github.toastshaman.dropwizard.auth.jwt.exceptioons.MalformedJWTTokenException;
+import com.github.toastshaman.dropwizard.auth.jwt.exceptioons.JsonWebTokenException;
+import com.github.toastshaman.dropwizard.auth.jwt.exceptioons.MalformedJsonWebTokenException;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
@@ -19,7 +19,7 @@ import static java.lang.String.format;
 import static java.util.Arrays.copyOf;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
-public class JWTToken {
+public class JsonWebToken {
 
     private final JWTHeader header;
 
@@ -29,7 +29,7 @@ public class JWTToken {
 
     private Optional<List<String>> rawToken = Optional.absent();
 
-    private JWTToken(JWTHeader header, JWTClaim claim, Optional<byte[]> signature, Optional<List<String>> rawToken) {
+    private JsonWebToken(JWTHeader header, JWTClaim claim, Optional<byte[]> signature, Optional<List<String>> rawToken) {
         this.header = header;
         this.claim = claim;
         this.signature = signature;
@@ -55,7 +55,7 @@ public class JWTToken {
             mapper.writeValue(output, input);
             return output.toString();
         } catch (IOException e) {
-            throw new JWTTokenException(e.getMessage(), e);
+            throw new JsonWebTokenException(e.getMessage(), e);
         }
     }
 
@@ -73,13 +73,13 @@ public class JWTToken {
 
         private Optional<List<String>> rawToken = Optional.absent();
 
-        public JWTToken build() {
+        public JsonWebToken build() {
             checkNotNull(header);
             checkNotNull(claim);
             checkNotNull(rawToken);
             if (signature.isPresent()) { checkArgument(signature.get().length > 0); }
             if (rawToken.isPresent()) { checkArgument(rawToken.get().size() == 3); };
-            return new JWTToken(header, claim, signature, rawToken);
+            return new JsonWebToken(header, claim, signature, rawToken);
         }
 
         public DecoderBuilder header(String header) {
@@ -88,7 +88,7 @@ public class JWTToken {
                 this.header = mapper.readValue(header, JWTHeader.class);
                 return this;
             } catch (Exception e) {
-                throw new MalformedJWTTokenException(format("The provided JWT header is malformed: [%s]", header), e);
+                throw new MalformedJsonWebTokenException(format("The provided JWT header is malformed: [%s]", header), e);
             }
         }
 
@@ -98,7 +98,7 @@ public class JWTToken {
                 this.claim = mapper.readValue(claim, JWTClaim.class);
                 return this;
             } catch (Exception e) {
-                throw new MalformedJWTTokenException(format("The provided JWT claim is malformed: [%s]", claim), e);
+                throw new MalformedJsonWebTokenException(format("The provided JWT claim is malformed: [%s]", claim), e);
             }
         }
 
@@ -135,10 +135,10 @@ public class JWTToken {
             return this;
         }
 
-        public JWTToken build() {
+        public JsonWebToken build() {
             checkNotNull(claim);
             checkNotNull(header);
-            return new JWTToken(header, claim, Optional.<byte[]>absent(), Optional.<List<String>>absent());
+            return new JsonWebToken(header, claim, Optional.<byte[]>absent(), Optional.<List<String>>absent());
         }
     }
 

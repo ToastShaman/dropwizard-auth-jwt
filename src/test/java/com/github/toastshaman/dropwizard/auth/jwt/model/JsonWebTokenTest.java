@@ -4,13 +4,11 @@ import com.github.toastshaman.dropwizard.auth.jwt.signer.HmacSHA256Signer;
 import com.google.common.io.BaseEncoding;
 import org.junit.Test;
 
-import java.nio.charset.Charset;
-
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 
-public class JWTTokenTest {
+public class JsonWebTokenTest {
 
     @Test public void
     build_a_valid_token() {
@@ -22,7 +20,7 @@ public class JWTTokenTest {
 
         final byte[] key = decode("AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow");
 
-        JWTToken token = JWTToken.encode()
+        JsonWebToken token = JsonWebToken.encode()
                 .header(
                         JWTHeader.builder().typ("JWT").alg("HS256").build())
                 .claim(
