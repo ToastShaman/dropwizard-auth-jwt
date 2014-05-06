@@ -18,7 +18,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 import static java.util.Arrays.copyOf;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
-import static org.apache.commons.lang.StringUtils.overlay;
 
 public class JWTToken {
 
@@ -26,41 +25,27 @@ public class JWTToken {
 
     private final JWTClaim claim;
 
-    private byte[] signature;
+    private Optional<byte[]> signature;
 
     private Optional<List<String>> rawToken = Optional.absent();
 
-    public JWTToken(JWTHeader header, JWTClaim claim, byte[] signature) {
+    private JWTToken(JWTHeader header, JWTClaim claim, Optional<byte[]> signature, Optional<List<String>> rawToken) {
         this.header = header;
         this.claim = claim;
-        this.signature = copyOf(signature, signature.length);
-        this.rawToken = Optional.absent();
-    }
-
-    private JWTToken(JWTHeader header, JWTClaim claim, byte[] signature, Optional<List<String>> rawToken) {
-        this.header = header;
-        this.claim = claim;
-        this.signature = copyOf(signature, signature.length);
+        this.signature = signature;
         this.rawToken = rawToken;
-    }
-
-    private JWTToken(JWTHeader header, JWTClaim claim) {
-        this.header = header;
-        this.claim = claim;
     }
 
     public JWTHeader getHeader() { return header; }
 
     public JWTClaim getClaim() { return claim; }
 
-    public byte[] getSignature() { return copyOf(signature, signature.length); }
+    public byte[] getSignature() { return signature.orNull(); }
 
-    public String deserialize() {
-        return Joiner
-                .on(".")
-                .join(
-                        BaseEncoding.base64Url().omitPadding().encode(toJson(header).getBytes(Charset.forName("UTF-8"))),
-                        BaseEncoding.base64Url().omitPadding().encode(toJson(claim).getBytes(Charset.forName("UTF-8"))));
+    public String deserialize() { return Joiner.on(".").join(encode(toJson(header)), encode(toJson(claim))); }
+
+    private String encode(String input) {
+        return BaseEncoding.base64Url().omitPadding().encode(input.getBytes(Charset.forName("UTF-8")));
     }
 
     private String toJson(Object input) {
@@ -84,15 +69,16 @@ public class JWTToken {
 
         private JWTClaim claim;
 
-        private byte[] signature;
+        private Optional<byte[]> signature = Optional.absent();
 
         private Optional<List<String>> rawToken = Optional.absent();
 
         public JWTToken build() {
             checkNotNull(header);
             checkNotNull(claim);
-            checkNotNull(signature);
-            checkArgument(signature.length > 0);
+            checkNotNull(rawToken);
+            if (signature.isPresent()) { checkArgument(signature.get().length > 0); }
+            if (rawToken.isPresent()) { checkArgument(rawToken.get().size() == 3); };
             return new JWTToken(header, claim, signature, rawToken);
         }
 
@@ -119,7 +105,7 @@ public class JWTToken {
         public DecoderBuilder signature(byte[] signature) {
             checkNotNull(signature);
             checkArgument(signature.length > 0);
-            this.signature = signature;
+            this.signature = Optional.of(copyOf(signature, signature.length));
             return this;
         }
 
@@ -152,7 +138,7 @@ public class JWTToken {
         public JWTToken build() {
             checkNotNull(claim);
             checkNotNull(header);
-            return new JWTToken(header, claim);
+            return new JWTToken(header, claim, Optional.<byte[]>absent(), Optional.<List<String>>absent());
         }
     }
 
