@@ -63,7 +63,6 @@ public class JsonWebTokenClaims {
 
         public Builder exp(Integer exp) {
             checkNotNull(exp);
-            checkNotNull(exp);
             this.exp = exp;
             return this;
         }
