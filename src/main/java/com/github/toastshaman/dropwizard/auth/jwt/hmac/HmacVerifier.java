@@ -1,20 +1,23 @@
 package com.github.toastshaman.dropwizard.auth.jwt.hmac;
 
-import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenVerifier;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
 import com.google.common.base.Joiner;
 import org.apache.commons.lang.StringUtils;
 
+import javax.crypto.Mac;
 import java.util.List;
 
+import static com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenUtils.bytesOf;
+import static com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenUtils.toBase64;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public abstract class HmacVerifier extends BaseHmac implements JsonWebTokenVerifier {
+public class HmacVerifier {
 
-    public HmacVerifier(byte[] secret) { super(secret); }
+    private final Mac hmac;
 
-    @Override
+    public HmacVerifier(Mac hmac) { this.hmac = hmac; }
+
     public boolean verifySignature(JsonWebToken token) {
         checkArgument(token.getRawToken().isPresent());
         checkNotNull(token.getSignature());

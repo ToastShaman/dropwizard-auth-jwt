@@ -1,34 +1,40 @@
 package com.github.toastshaman.dropwizard.auth.jwt.hmac;
 
 import com.github.toastshaman.dropwizard.auth.jwt.exceptioons.JsonWebTokenException;
-import com.google.common.io.BaseEncoding;
+import org.apache.commons.lang.StringUtils;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
-import static com.google.common.base.Charsets.UTF_8;
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public abstract class BaseHmac {
+public abstract class KeyAware {
 
     protected final byte[] secret;
+
+    private final String algorithm;
 
     protected SecretKeySpec signingKey;
 
     protected Mac hmac;
 
-    public BaseHmac(byte[] secret) {
+    public KeyAware(byte[] secret, String algorithm) {
         checkNotNull(secret);
+        checkNotNull(algorithm);
+        checkArgument(StringUtils.isNotEmpty(algorithm));
+
+        this.algorithm = algorithm;
         this.secret = secret;
         initialiseKey(secret);
     }
 
     private void initialiseKey(byte[] key) {
-        this.signingKey = new SecretKeySpec(secret, getSignatureAlgorithm());
+        this.signingKey = new SecretKeySpec(secret, algorithm);
         try {
-            this.hmac = Mac.getInstance(getSignatureAlgorithm());
+            this.hmac = Mac.getInstance(algorithm);
         } catch (NoSuchAlgorithmException e) {
             throw new JsonWebTokenException(e.getMessage(), e);
         }
@@ -39,10 +45,4 @@ public abstract class BaseHmac {
             throw new JsonWebTokenException(e.getMessage(), e);
         }
     }
-
-    abstract String getSignatureAlgorithm();
-
-    byte[] bytesOf(String input) { return input.getBytes(UTF_8); }
-
-    String toBase64(byte[] signature) { return BaseEncoding.base64Url().omitPadding().encode(signature); }
 }
