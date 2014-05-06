@@ -6,6 +6,6 @@ public interface JWTTokenVerifier {
 
     String algorithm();
 
-    boolean verifySignature(JWTToken token, byte[] signature);
+    boolean verifySignature(JWTToken token);
 
 }

@@ -29,7 +29,7 @@ public class DefaultJWTTokenParser implements JWTTokenParser {
         String jwtClaim = decodeAsString(pieces.get(1));
         byte[] jwtSignature = decode(pieces.get(2));
 
-        return JWTToken.builder().header(jwtHeader).claim(jwtClaim).signature(jwtSignature).build();
+        return JWTToken.builder().header(jwtHeader).claim(jwtClaim).signature(jwtSignature).rawToken(pieces).build();
     }
 
     private String decodeAsString(String input) { return new String(decode(input), Charset.forName("UTF-8")); }
