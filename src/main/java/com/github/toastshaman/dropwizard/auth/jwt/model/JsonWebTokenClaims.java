@@ -3,10 +3,7 @@ package com.github.toastshaman.dropwizard.auth.jwt.model;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import java.util.Map;
 
@@ -15,7 +12,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMap;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
-public class JWTClaim {
+public class JsonWebTokenClaims {
 
     @JsonProperty("iss")
     private String iss;
@@ -25,11 +22,11 @@ public class JWTClaim {
 
     private Map<String, Object> params = newHashMap();
 
-    private JWTClaim() {
+    private JsonWebTokenClaims() {
         // we need an empty constructor for the Jackson mapper
     }
 
-    private JWTClaim(String iss, Integer exp, Map<String, Object> params) {
+    private JsonWebTokenClaims(String iss, Integer exp, Map<String, Object> params) {
         this.iss = iss;
         this.exp = exp;
         this.params = ImmutableMap.copyOf(params);
@@ -55,7 +52,7 @@ public class JWTClaim {
 
         private Map<String, Object> params = newHashMap();
 
-        public JWTClaim build() { return new JWTClaim(iss, exp, params); }
+        public JsonWebTokenClaims build() { return new JsonWebTokenClaims(iss, exp, params); }
 
         public Builder iss(String iss) {
             checkArgument(isNotBlank(iss));

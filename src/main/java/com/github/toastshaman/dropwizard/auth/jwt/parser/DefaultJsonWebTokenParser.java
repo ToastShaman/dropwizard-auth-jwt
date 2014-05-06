@@ -1,6 +1,6 @@
 package com.github.toastshaman.dropwizard.auth.jwt.parser;
 
-import com.github.toastshaman.dropwizard.auth.jwt.JWTParser;
+import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenParser;
 import com.github.toastshaman.dropwizard.auth.jwt.exceptioons.MalformedJsonWebTokenException;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
 import com.google.common.base.Splitter;
@@ -13,7 +13,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
-public class DefaultJWTParser implements JWTParser {
+public class DefaultJsonWebTokenParser implements JsonWebTokenParser {
 
     @Override
     public JsonWebToken parse(String token) {

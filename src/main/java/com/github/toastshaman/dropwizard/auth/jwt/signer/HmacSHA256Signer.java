@@ -1,6 +1,6 @@
 package com.github.toastshaman.dropwizard.auth.jwt.signer;
 
-import com.github.toastshaman.dropwizard.auth.jwt.JWTSigner;
+import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenSigner;
 import com.github.toastshaman.dropwizard.auth.jwt.exceptioons.JsonWebTokenException;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
 import com.google.common.base.Joiner;
@@ -14,7 +14,7 @@ import java.security.NoSuchAlgorithmException;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class HmacSHA256Signer implements JWTSigner {
+public class HmacSHA256Signer implements JsonWebTokenSigner {
 
     private static final String HMAC_SHA256_ALG = "HmacSHA256";
 

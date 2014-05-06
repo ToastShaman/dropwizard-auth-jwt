@@ -22,9 +22,9 @@ public class JsonWebTokenTest {
 
         JsonWebToken token = JsonWebToken.encode()
                 .header(
-                        JWTHeader.builder().typ("JWT").alg("HS256").build())
+                        JsonWebTokenHeader.builder().typ("JWT").alg("HS256").build())
                 .claim(
-                        JWTClaim.builder().iss("joe").exp(1300819380).param("http://example.com/is_root", true).build())
+                        JsonWebTokenClaims.builder().iss("joe").exp(1300819380).param("http://example.com/is_root", true).build())
                 .build();
 
         HmacSHA256Signer signer = new HmacSHA256Signer(key);

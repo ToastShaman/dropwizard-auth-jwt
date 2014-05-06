@@ -1,7 +1,7 @@
 package com.github.toastshaman.dropwizard.auth.jwt.verifier;
 
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
-import com.github.toastshaman.dropwizard.auth.jwt.parser.DefaultJWTParser;
+import com.github.toastshaman.dropwizard.auth.jwt.parser.DefaultJsonWebTokenParser;
 import com.google.common.io.BaseEncoding;
 import org.junit.Test;
 
@@ -20,7 +20,7 @@ public class HmacSHA256SignatureVerifierTest {
 
         final byte[] key = decode("AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow");
 
-        JsonWebToken token = new DefaultJWTParser().parse(encodedToken);
+        JsonWebToken token = new DefaultJsonWebTokenParser().parse(encodedToken);
 
         HmacSHA256SignatureVerifier verifier = new HmacSHA256SignatureVerifier(key);
 

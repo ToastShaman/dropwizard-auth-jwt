@@ -1,6 +1,6 @@
 package com.github.toastshaman.dropwizard.auth.jwt.verifier;
 
-import com.github.toastshaman.dropwizard.auth.jwt.JWTVerifier;
+import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenVerifier;
 import com.github.toastshaman.dropwizard.auth.jwt.exceptioons.JsonWebTokenException;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
 import com.google.common.base.Joiner;
@@ -17,7 +17,7 @@ import java.util.List;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class HmacSHA256SignatureVerifier implements JWTVerifier {
+public class HmacSHA256SignatureVerifier implements JsonWebTokenVerifier {
 
     private static final String HMAC_SHA256_ALG = "HmacSHA256";
 

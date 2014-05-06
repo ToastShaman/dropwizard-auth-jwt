@@ -19,7 +19,7 @@ public class DefaultJsonWebTokenParserTest {
                 + ".eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ"
                 + ".dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk";
 
-        JsonWebToken token = new DefaultJWTParser().parse(encodedToken);
+        JsonWebToken token = new DefaultJsonWebTokenParser().parse(encodedToken);
 
         assertThat(token.getHeader(), notNullValue());
         assertThat(token.getClaim(), notNullValue());
