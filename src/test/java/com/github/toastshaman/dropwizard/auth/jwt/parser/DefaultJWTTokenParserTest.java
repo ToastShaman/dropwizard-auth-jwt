@@ -29,7 +29,7 @@ public class DefaultJWTTokenParserTest {
         assertThat(token.getHeader(), hasProperty("alg", equalTo("HS256")));
 
         assertThat(token.getClaim(), hasProperty("iss", equalTo("joe")));
-        assertThat(token.getClaim(), hasProperty("exp", equalTo("1300819380")));
+        assertThat(token.getClaim(), hasProperty("exp", equalTo(1300819380)));
         assertThat((Boolean) token.getClaim().getParameter("http://example.com/is_root"), equalTo(true));
     }
 }

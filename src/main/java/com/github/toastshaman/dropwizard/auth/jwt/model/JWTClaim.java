@@ -21,7 +21,7 @@ public class JWTClaim {
     private String iss;
 
     @JsonProperty("exp")
-    private String exp;
+    private Integer exp;
 
     private Map<String, Object> params = newHashMap();
 
@@ -29,13 +29,13 @@ public class JWTClaim {
         // we need an empty constructor for the Jackson mapper
     }
 
-    private JWTClaim(String iss, String exp, Map<String, Object> params) {
+    private JWTClaim(String iss, Integer exp, Map<String, Object> params) {
         this.iss = iss;
         this.exp = exp;
         this.params = ImmutableMap.copyOf(params);
     }
 
-    public String getExp() { return exp; }
+    public Integer getExp() { return exp; }
 
     public String getIss() { return iss; }
 
@@ -51,13 +51,11 @@ public class JWTClaim {
 
         private String iss;
 
-        private String exp;
+        private Integer exp;
 
         private Map<String, Object> params = newHashMap();
 
-        public JWTClaim build() {
-            return new JWTClaim(iss, exp, params);
-        }
+        public JWTClaim build() { return new JWTClaim(iss, exp, params); }
 
         public Builder iss(String iss) {
             checkArgument(isNotBlank(iss));
@@ -66,8 +64,8 @@ public class JWTClaim {
             return this;
         }
 
-        public Builder exp(String exp) {
-            checkArgument(isNotBlank(exp));
+        public Builder exp(Integer exp) {
+            checkNotNull(exp);
 
             this.exp = exp;
             return this;
