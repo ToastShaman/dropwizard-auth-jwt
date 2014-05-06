@@ -1,4 +1,4 @@
-package com.github.toastshaman.dropwizard.auth.jwt.exceptioons;
+package com.github.toastshaman.dropwizard.auth.jwt.exceptions;
 
 public class MalformedJsonWebTokenException extends RuntimeException {
 

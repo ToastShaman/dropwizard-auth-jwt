@@ -1,6 +1,6 @@
 package com.github.toastshaman.dropwizard.auth.jwt.hmac;
 
-import com.github.toastshaman.dropwizard.auth.jwt.exceptioons.JsonWebTokenException;
+import com.github.toastshaman.dropwizard.auth.jwt.exceptions.JsonWebTokenException;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;

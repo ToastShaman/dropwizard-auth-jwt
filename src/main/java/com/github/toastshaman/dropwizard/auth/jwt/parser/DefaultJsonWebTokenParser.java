@@ -1,7 +1,7 @@
 package com.github.toastshaman.dropwizard.auth.jwt.parser;
 
 import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenParser;
-import com.github.toastshaman.dropwizard.auth.jwt.exceptioons.MalformedJsonWebTokenException;
+import com.github.toastshaman.dropwizard.auth.jwt.exceptions.MalformedJsonWebTokenException;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
 import com.google.common.base.Splitter;
 

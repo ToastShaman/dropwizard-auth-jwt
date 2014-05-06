@@ -1,8 +1,8 @@
 package com.github.toastshaman.dropwizard.auth.jwt.model;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.toastshaman.dropwizard.auth.jwt.exceptioons.JsonWebTokenException;
-import com.github.toastshaman.dropwizard.auth.jwt.exceptioons.MalformedJsonWebTokenException;
+import com.github.toastshaman.dropwizard.auth.jwt.exceptions.JsonWebTokenException;
+import com.github.toastshaman.dropwizard.auth.jwt.exceptions.MalformedJsonWebTokenException;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
