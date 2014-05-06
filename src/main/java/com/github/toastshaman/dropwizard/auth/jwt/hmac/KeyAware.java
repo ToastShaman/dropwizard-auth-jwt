@@ -1,7 +1,6 @@
 package com.github.toastshaman.dropwizard.auth.jwt.hmac;
 
 import com.github.toastshaman.dropwizard.auth.jwt.exceptioons.JsonWebTokenException;
-import org.apache.commons.lang.StringUtils;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -10,6 +9,7 @@ import java.security.NoSuchAlgorithmException;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.apache.commons.lang.StringUtils.isNotEmpty;
 
 public abstract class KeyAware {
 
@@ -24,7 +24,7 @@ public abstract class KeyAware {
     public KeyAware(byte[] secret, String algorithm) {
         checkNotNull(secret);
         checkNotNull(algorithm);
-        checkArgument(StringUtils.isNotEmpty(algorithm));
+        checkArgument(isNotEmpty(algorithm));
 
         this.algorithm = algorithm;
         this.secret = secret;

@@ -4,11 +4,11 @@ import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenParser;
 import com.github.toastshaman.dropwizard.auth.jwt.exceptioons.MalformedJsonWebTokenException;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
 import com.google.common.base.Splitter;
-import com.google.common.io.BaseEncoding;
 
-import java.nio.charset.Charset;
 import java.util.List;
 
+import static com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenUtils.fromBase64;
+import static com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenUtils.fromBase64ToString;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
@@ -25,14 +25,12 @@ public class DefaultJsonWebTokenParser implements JsonWebTokenParser {
             throw new MalformedJsonWebTokenException(format("The supplied token is malformed: [%s]", token));
         }
 
-        String jwtHeader = decodeAsString(pieces.get(0));
-        String jwtClaim = decodeAsString(pieces.get(1));
-        byte[] jwtSignature = decode(pieces.get(2));
+        String jwtHeader = fromBase64ToString(pieces.get(0));
+        String jwtClaim = fromBase64ToString(pieces.get(1));
+        byte[] jwtSignature = fromBase64(pieces.get(2));
 
         return JsonWebToken.decode().header(jwtHeader).claim(jwtClaim).signature(jwtSignature).rawToken(pieces).build();
     }
 
-    protected String decodeAsString(String input) { return new String(decode(input), Charset.forName("UTF-8")); }
 
-    private byte[] decode(String input) { return BaseEncoding.base64Url().omitPadding().decode(input); }
 }
