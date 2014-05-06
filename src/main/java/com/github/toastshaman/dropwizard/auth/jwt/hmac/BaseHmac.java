@@ -11,7 +11,7 @@ import java.security.NoSuchAlgorithmException;
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public abstract class BaseHmacSigner {
+public abstract class BaseHmac {
 
     protected final byte[] secret;
 
@@ -19,7 +19,7 @@ public abstract class BaseHmacSigner {
 
     protected Mac hmac;
 
-    public BaseHmacSigner(byte[] secret) {
+    public BaseHmac(byte[] secret) {
         checkNotNull(secret);
         this.secret = secret;
         initialiseKey(secret);

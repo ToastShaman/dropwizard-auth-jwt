@@ -6,7 +6,7 @@ import com.google.common.base.Joiner;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public abstract class HmacSigner extends BaseHmacSigner implements JsonWebTokenSigner {
+public abstract class HmacSigner extends BaseHmac implements JsonWebTokenSigner {
 
     public HmacSigner(byte[] secret) { super(secret); }
 

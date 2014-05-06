@@ -10,7 +10,7 @@ import java.util.List;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public abstract class HmacVerifier extends BaseHmacSigner implements JsonWebTokenVerifier {
+public abstract class HmacVerifier extends BaseHmac implements JsonWebTokenVerifier {
 
     public HmacVerifier(byte[] secret) { super(secret); }
 
