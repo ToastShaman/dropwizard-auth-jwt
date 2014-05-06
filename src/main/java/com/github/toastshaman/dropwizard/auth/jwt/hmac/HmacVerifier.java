@@ -7,7 +7,6 @@ import org.apache.commons.lang.StringUtils;
 
 import java.util.List;
 
-import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -29,13 +28,9 @@ public abstract class HmacVerifier extends BaseHmacSigner implements JsonWebToke
 
     private byte[] calculateSignatureFor(JsonWebToken token) {
         final List<String> pieces = token.getRawToken().get();
-        return hmac.doFinal(transform(concatenate(pieces)));
+        return hmac.doFinal(bytesOf(concatenate(pieces)));
     }
 
-    private String concatenate(List<String> pieces) {
-        return Joiner.on(".").join(pieces.get(0), pieces.get(1));
-    }
-
-    private byte[] transform(String input) { return input.getBytes(UTF_8); }
+    private String concatenate(List<String> pieces) { return Joiner.on(".").join(pieces.get(0), pieces.get(1)); }
 
 }
