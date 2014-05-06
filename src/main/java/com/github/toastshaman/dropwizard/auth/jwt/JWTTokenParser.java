@@ -1,14 +1,8 @@
 package com.github.toastshaman.dropwizard.auth.jwt;
 
-public class JWTTokenParser {
+import com.github.toastshaman.dropwizard.auth.jwt.model.JWTToken;
 
-    private final String secret;
+public interface JWTTokenParser {
 
-    public JWTTokenParser(String secret) {
-        this.secret = secret;
-    }
-
-    public JWTToken parse(String token) {
-        return new JWTToken();
-    }
+    JWTToken parse(String token);
 }
