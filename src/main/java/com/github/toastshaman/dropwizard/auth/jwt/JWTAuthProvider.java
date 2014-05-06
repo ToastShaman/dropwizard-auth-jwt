@@ -1,4 +1,4 @@
-package com.github.toastshaman.auth.jwt;
+package com.github.toastshaman.dropwizard.auth.jwt;
 
 import com.google.common.base.Optional;
 import com.sun.jersey.api.core.HttpContext;

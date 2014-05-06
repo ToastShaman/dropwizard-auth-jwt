@@ -1,4 +1,4 @@
-package com.github.toastshaman.auth.jwt;
+package com.github.toastshaman.dropwizard.auth.jwt;
 
 public class JWTTokenParser {
 
