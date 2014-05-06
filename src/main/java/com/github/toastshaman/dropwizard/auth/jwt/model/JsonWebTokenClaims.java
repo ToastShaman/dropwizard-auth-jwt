@@ -55,23 +55,23 @@ public class JsonWebTokenClaims {
         public JsonWebTokenClaims build() { return new JsonWebTokenClaims(iss, exp, params); }
 
         public Builder iss(String iss) {
+            checkNotNull(iss);
             checkArgument(isNotBlank(iss));
-
             this.iss = iss;
             return this;
         }
 
         public Builder exp(Integer exp) {
             checkNotNull(exp);
-
+            checkNotNull(exp);
             this.exp = exp;
             return this;
         }
 
         public Builder param(String key, Object value) {
-            checkArgument(isNotBlank(key));
+            checkNotNull(key);
             checkNotNull(value);
-
+            checkArgument(isNotBlank(key));
             params.put(key, value);
             return this;
         }

@@ -42,20 +42,24 @@ public class JsonWebTokenHeader {
         private Map<String, Object> params = newHashMap();
 
         public JsonWebTokenHeader build() {
+            checkNotNull(alg);
+            checkNotNull(typ);
             checkArgument(isNotBlank(alg));
             checkArgument(isNotBlank(typ));
             return new JsonWebTokenHeader(typ, alg);
         }
 
         public Builder alg(String alg) {
+            checkNotNull(alg);
             checkArgument(isNotBlank(alg));
-            this.alg = alg;
+            this.alg = alg.toUpperCase();
             return this;
         }
 
         public Builder typ(String typ) {
+            checkNotNull(typ);
             checkArgument(isNotBlank(typ));
-            this.typ = typ;
+            this.typ = typ.toUpperCase();
             return this;
         }
     }

@@ -32,7 +32,7 @@ public class DefaultJsonWebTokenParser implements JsonWebTokenParser {
         return JsonWebToken.decode().header(jwtHeader).claim(jwtClaim).signature(jwtSignature).rawToken(pieces).build();
     }
 
-    private String decodeAsString(String input) { return new String(decode(input), Charset.forName("UTF-8")); }
+    protected String decodeAsString(String input) { return new String(decode(input), Charset.forName("UTF-8")); }
 
     private byte[] decode(String input) { return BaseEncoding.base64Url().omitPadding().decode(input); }
 }
