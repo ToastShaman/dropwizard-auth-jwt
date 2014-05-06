@@ -42,7 +42,7 @@ public abstract class BaseHmac {
 
     abstract String getSignatureAlgorithm();
 
-    byte[] bytesOf(String payload) { return payload.getBytes(UTF_8); }
+    byte[] bytesOf(String input) { return input.getBytes(UTF_8); }
 
     String toBase64(byte[] signature) { return BaseEncoding.base64Url().omitPadding().encode(signature); }
 }
