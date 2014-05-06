@@ -1,5 +1,6 @@
 package com.github.toastshaman.dropwizard.auth.jwt.verifier;
 
+import com.github.toastshaman.dropwizard.auth.jwt.hmac.HmacSHA256Verifier;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
 import com.github.toastshaman.dropwizard.auth.jwt.parser.DefaultJsonWebTokenParser;
 import com.google.common.io.BaseEncoding;
@@ -8,7 +9,7 @@ import org.junit.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
-public class HmacSHA256SignatureVerifierTest {
+public class HmacSHA256VerifierTest {
 
     @Test
     public void
@@ -22,7 +23,7 @@ public class HmacSHA256SignatureVerifierTest {
 
         JsonWebToken token = new DefaultJsonWebTokenParser().parse(encodedToken);
 
-        HmacSHA256SignatureVerifier verifier = new HmacSHA256SignatureVerifier(key);
+        HmacSHA256Verifier verifier = new HmacSHA256Verifier(key);
 
         assertThat(verifier.verifySignature(token), equalTo(true));
     }

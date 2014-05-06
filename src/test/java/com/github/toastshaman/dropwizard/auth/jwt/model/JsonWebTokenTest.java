@@ -1,6 +1,6 @@
 package com.github.toastshaman.dropwizard.auth.jwt.model;
 
-import com.github.toastshaman.dropwizard.auth.jwt.signer.HmacSHA256Signer;
+import com.github.toastshaman.dropwizard.auth.jwt.hmac.HmacSHA256Signer;
 import com.google.common.io.BaseEncoding;
 import org.junit.Test;
 
