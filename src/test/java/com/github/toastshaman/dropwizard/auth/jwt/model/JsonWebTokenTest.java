@@ -2,7 +2,6 @@ package com.github.toastshaman.dropwizard.auth.jwt.model;
 
 import com.github.toastshaman.dropwizard.auth.jwt.hmac.HmacSHA256Signer;
 import org.joda.time.DateTime;
-import org.joda.time.Instant;
 import org.junit.Test;
 
 import static com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenUtils.fromBase64;
@@ -21,7 +20,7 @@ public class JsonWebTokenTest {
 
         final byte[] key = fromBase64("AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow");
 
-        JsonWebToken token = JsonWebToken.encode()
+        JsonWebToken token = JsonWebToken.builder()
                 .header(JsonWebTokenHeader.HS256())
                 .claim(
                         JsonWebTokenClaims.builder()

@@ -1,9 +1,12 @@
 package com.github.toastshaman.dropwizard.auth.jwt.hmac;
 
+import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenAlgorithms;
 import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenVerifier;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
 
 import static com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenAlgorithms.HS384;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
 
 public class HmacSHA384Verifier extends KeyAware implements JsonWebTokenVerifier {
 
@@ -20,5 +23,8 @@ public class HmacSHA384Verifier extends KeyAware implements JsonWebTokenVerifier
     public String algorithm() { return HS384; }
 
     @Override
-    public void verifySignature(JsonWebToken token) { hmacVerifier.verifySignature(token); }
+    public void verifySignature(JsonWebToken token) {
+        checkArgument(token.header().alg().equals(HS384), "Can not verify a %s with a %s verifier", token.header().alg(), HS384);
+        hmacVerifier.verifySignature(token);
+    }
 }

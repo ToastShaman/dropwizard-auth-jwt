@@ -8,33 +8,26 @@ import com.github.toastshaman.dropwizard.auth.jwt.parser.DefaultJsonWebTokenPars
 import org.junit.Test;
 
 import static com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenUtils.bytesOf;
-import static com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenUtils.fromBase64;
-import static org.hamcrest.MatcherAssert.assertThat;
 
-public class HmacSHA256VerifierTest {
-
-    private final String encodedToken = ""
-            + "eyJ0eXAiOiJKV1QiLA0KICJhbGciOiJIUzI1NiJ9"
-            + ".eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ"
-            + ".dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk";
-
-    private final byte[] key = fromBase64("AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow");
+public class HmacSHA512VerifierTest {
 
     @Test
     public void
     verifies_a_valid_signature() {
+        final String encodedToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJqb2UiLCJleHAiOm51bGx9.JFtrDyI2ODV5I_aVfX7BnIClMqXi2SEDbRI2XTL2fV6veWICptkPi6OUJUHhSP9v_7rX8brgHJn-gbDmla_aEw";
+        final byte[] key = bytesOf("SECRET");
         final JsonWebToken token = new DefaultJsonWebTokenParser().parse(encodedToken);
-        final HmacSHA256Verifier verifier = new HmacSHA256Verifier(key);
+        final HmacSHA512Verifier verifier = new HmacSHA512Verifier(key);
         verifier.verifySignature(token);
     }
 
     @Test(expected = InvalidSignatureException.class)
     public void
     throws_a_signature_invalid_exception_if_the_signature_does_not_match() {
-        final HmacSHA256Signer signer = new HmacSHA256Signer(bytesOf("SECRET"));
-        final JsonWebToken token = JsonWebToken.builder().header(JsonWebTokenHeader.HS256()).claim(JsonWebTokenClaims.builder().iss("joe").build()).build();
+        final HmacSHA512Signer signer = new HmacSHA512Signer(bytesOf("SECRET"));
+        final JsonWebToken token = JsonWebToken.builder().header(JsonWebTokenHeader.HS512()).claim(JsonWebTokenClaims.builder().iss("joe").build()).build();
         final String signedToken = signer.sign(token);
-        final HmacSHA256Verifier verifier = new HmacSHA256Verifier(bytesOf("DIFFERENT_KEY"));
+        final HmacSHA512Verifier verifier = new HmacSHA512Verifier(bytesOf("DIFFERENT_KEY"));
 
         verifier.verifySignature(new DefaultJsonWebTokenParser().parse(signedToken));
     }

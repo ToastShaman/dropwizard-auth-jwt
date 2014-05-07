@@ -23,5 +23,4 @@ public class HmacSigner {
     }
 
     private byte[] sign(byte[] input) { return hmac.doFinal(input); }
-
 }

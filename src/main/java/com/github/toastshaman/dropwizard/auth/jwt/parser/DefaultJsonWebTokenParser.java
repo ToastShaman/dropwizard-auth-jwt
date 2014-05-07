@@ -29,8 +29,6 @@ public class DefaultJsonWebTokenParser implements JsonWebTokenParser {
         String jwtClaim = fromBase64ToString(pieces.get(1));
         byte[] jwtSignature = fromBase64(pieces.get(2));
 
-        return JsonWebToken.decode().header(jwtHeader).claim(jwtClaim).signature(jwtSignature).rawToken(pieces).build();
+        return JsonWebToken.parser().header(jwtHeader).claim(jwtClaim).signature(jwtSignature).rawToken(pieces).build();
     }
-
-
 }

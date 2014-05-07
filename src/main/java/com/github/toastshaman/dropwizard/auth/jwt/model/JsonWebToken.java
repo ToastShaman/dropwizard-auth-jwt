@@ -138,7 +138,7 @@ public class JsonWebToken {
         }
     }
 
-    public static DecoderBuilder decode() { return new DecoderBuilder(); }
+    public static DecoderBuilder parser() { return new DecoderBuilder(); }
 
-    public static EncoderBuilder encode() { return new EncoderBuilder(); }
+    public static EncoderBuilder builder() { return new EncoderBuilder(); }
 }
