@@ -1,5 +1,6 @@
 package com.github.toastshaman.dropwizard.auth.jwt.hmac;
 
+import com.github.toastshaman.dropwizard.auth.jwt.exceptions.JsonWebTokenException;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
 import com.google.common.base.Joiner;
 import org.apache.commons.lang.StringUtils;
@@ -30,8 +31,11 @@ public class HmacVerifier {
     }
 
     private byte[] calculateSignatureFor(JsonWebToken token) {
-        final List<String> pieces = token.getRawToken().get();
-        return hmac.doFinal(bytesOf(concatenate(pieces)));
+        if (token.getRawToken().isPresent()) {
+            final List<String> pieces = token.getRawToken().get();
+            return hmac.doFinal(bytesOf(concatenate(pieces)));
+        }
+        throw new JsonWebTokenException("Signature can not be verified because the given token does not provide one.");
     }
 
     private String concatenate(List<String> pieces) { return Joiner.on(".").join(pieces.get(0), pieces.get(1)); }
