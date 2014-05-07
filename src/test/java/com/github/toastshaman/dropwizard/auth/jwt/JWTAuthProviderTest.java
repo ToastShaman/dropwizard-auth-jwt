@@ -99,6 +99,22 @@ public class JWTAuthProviderTest extends JerseyTest {
     }
 
     @Test
+    public void respondsToInvalidSignaturesWith500() throws Exception {
+        try {
+            final byte[] TOKEN_SECRET_KEY = bytesOf("DIFFERENT_KEY");
+            final HmacSHA512Signer signer = new HmacSHA512Signer(TOKEN_SECRET_KEY);
+            final JsonWebToken token = JsonWebToken.builder().header(JsonWebTokenHeader.HS512()).claim(JsonWebTokenClaims.builder().param("principal", "good-guy").build()).build();
+            final String signedToken = signer.sign(token);
+
+            client().resource("/test").header(HttpHeaders.AUTHORIZATION, "Bearer " + signedToken).get(String.class);
+
+            fail("An UniformInterfaceException.class exception should have been thrown");
+        } catch (UniformInterfaceException e) {
+            assertThat(e.getResponse().getStatus(), equalTo(500));
+        }
+    }
+
+    @Test
     public void respondsToExceptionsWith500() throws Exception {
         try {
             final byte[] TOKEN_SECRET_KEY = bytesOf("MySecretKey");

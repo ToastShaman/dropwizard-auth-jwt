@@ -68,8 +68,6 @@ public class JWTAuthProvider<T> implements InjectableProvider<Auth, Parameter> {
                             try {
                                 token = tokenParser.parse(rawToken);
                                 tokenVerifier.verifySignature(token);
-                            } catch (InvalidSignatureException e) {
-                                return null;
                             } catch (Exception e) {
                                 throw new AuthenticationException(e.getMessage(), e);
                             }
