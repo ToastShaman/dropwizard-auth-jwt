@@ -1,6 +1,8 @@
 package com.github.toastshaman.dropwizard.auth.jwt.model;
 
 import com.github.toastshaman.dropwizard.auth.jwt.hmac.HmacSHA256Signer;
+import org.joda.time.DateTime;
+import org.joda.time.Instant;
 import org.junit.Test;
 
 import static com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenUtils.fromBase64;
@@ -24,7 +26,7 @@ public class JsonWebTokenTest {
                 .claim(
                         JsonWebTokenClaims.builder()
                                 .iss("joe")
-                                .exp(1300819380)
+                                .exp(DateTime.now().withMillis(1300819380000L))
                                 .param("http://example.com/is_root", true)
                                 .build()
                 )

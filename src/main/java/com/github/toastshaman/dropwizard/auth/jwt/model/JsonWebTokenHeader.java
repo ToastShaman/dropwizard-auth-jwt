@@ -32,9 +32,9 @@ public class JsonWebTokenHeader {
         this.alg = alg;
     }
 
-    public String getAlg() { return alg; }
+    public String alg() { return alg; }
 
-    public String getTyp() { return typ; }
+    public String typ() { return typ; }
 
     public static class Builder {
 

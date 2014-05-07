@@ -36,9 +36,9 @@ public class JsonWebToken {
         this.rawToken = rawToken;
     }
 
-    public JsonWebTokenHeader getHeader() { return header; }
+    public JsonWebTokenHeader header() { return header; }
 
-    public JsonWebTokenClaims getClaim() { return claim; }
+    public JsonWebTokenClaims claim() { return claim; }
 
     public byte[] getSignature() { return signature.orNull(); }
 

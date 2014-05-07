@@ -1,12 +1,17 @@
 package com.github.toastshaman.dropwizard.auth.jwt.parser;
 
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.junit.Test;
 
+import java.beans.Introspector;
+import java.beans.MethodDescriptor;
+import java.beans.PropertyDescriptor;
+
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasProperty;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 
 public class DefaultJsonWebTokenParserTest {
 
@@ -21,14 +26,14 @@ public class DefaultJsonWebTokenParserTest {
 
         JsonWebToken token = new DefaultJsonWebTokenParser().parse(encodedToken);
 
-        assertThat(token.getHeader(), notNullValue());
-        assertThat(token.getClaim(), notNullValue());
+        assertThat(token.header(), notNullValue());
+        assertThat(token.claim(), notNullValue());
 
-        assertThat(token.getHeader(), hasProperty("typ", equalTo("JWT")));
-        assertThat(token.getHeader(), hasProperty("alg", equalTo("HS256")));
+        assertThat(token.header().typ(), equalTo("JWT"));
+        assertThat(token.header().alg(), equalTo("HS256"));
 
-        assertThat(token.getClaim(), hasProperty("iss", equalTo("joe")));
-        assertThat(token.getClaim(), hasProperty("exp", equalTo(1300819380)));
-        assertThat((Boolean) token.getClaim().getParameter("http://example.com/is_root"), equalTo(true));
+        assertThat(token.claim().iss(), equalTo("joe"));
+        assertThat(token.claim().exp(), equalTo(1300819380L));
+        assertThat((Boolean) token.claim().getParameter("http://example.com/is_root"), equalTo(true));
     }
 }

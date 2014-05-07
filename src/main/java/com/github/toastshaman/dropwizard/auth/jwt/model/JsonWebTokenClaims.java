@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.ImmutableMap;
+import org.joda.time.DateTime;
+import org.joda.time.Instant;
 
 import java.util.Map;
 
@@ -18,7 +20,7 @@ public class JsonWebTokenClaims {
     private String iss;
 
     @JsonProperty("exp")
-    private Integer exp;
+    private Long exp;
 
     private Map<String, Object> params = newHashMap();
 
@@ -26,15 +28,15 @@ public class JsonWebTokenClaims {
         // we need an empty constructor for the Jackson mapper
     }
 
-    private JsonWebTokenClaims(String iss, Integer exp, Map<String, Object> params) {
+    private JsonWebTokenClaims(String iss, Long exp, Map<String, Object> params) {
         this.iss = iss;
         this.exp = exp;
         this.params = ImmutableMap.copyOf(params);
     }
 
-    public Integer getExp() { return exp; }
+    public Long exp() { return exp; }
 
-    public String getIss() { return iss; }
+    public String iss() { return iss; }
 
     @JsonAnySetter
     private void addParameter(String key, Object object) { this.params.put(key, object); }
@@ -48,13 +50,11 @@ public class JsonWebTokenClaims {
 
         private String iss;
 
-        private Integer exp;
+        private Long exp;
 
         private Map<String, Object> params = newHashMap();
 
-        public JsonWebTokenClaims build() {
-            return new JsonWebTokenClaims(iss, exp, params);
-        }
+        public JsonWebTokenClaims build() { return new JsonWebTokenClaims(iss, exp, params); }
 
         public Builder iss(String iss) {
             checkNotNull(iss);
@@ -63,9 +63,9 @@ public class JsonWebTokenClaims {
             return this;
         }
 
-        public Builder exp(Integer exp) {
-            checkNotNull(exp);
-            this.exp = exp;
+        public Builder exp(DateTime time) {
+            checkNotNull(time);
+            this.exp = time.getMillis() / 1000;
             return this;
         }
 
