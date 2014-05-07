@@ -14,6 +14,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <dropwizard.version>0.7.0</dropwizard.version>
+        <jersey.version>1.18.1</jersey.version>
     </properties>
 
     <licenses>
@@ -42,6 +43,16 @@
         <tag>HEAD</tag>
     </scm>
 
+    <ciManagement>
+        <system>Travis CI</system>
+        <url>https://travis-ci.org/ToastShaman/dropwizard-auth-jwt</url>
+    </ciManagement>
+
+    <issueManagement>
+        <url>https://github.com/ToastShaman/dropwizard-auth-jwt/issues</url>
+        <system>GitHub Issues</system>
+    </issueManagement>
+
     <dependencies>
         <dependency>
             <groupId>io.dropwizard</groupId>
@@ -59,6 +70,18 @@
             <artifactId>junit</artifactId>
             <version>4.11</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey.jersey-test-framework</groupId>
+            <artifactId>jersey-test-framework-inmemory</artifactId>
+            <version>${jersey.version}</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 

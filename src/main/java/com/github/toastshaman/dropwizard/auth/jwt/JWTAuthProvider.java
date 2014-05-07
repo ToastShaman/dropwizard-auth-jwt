@@ -1,5 +1,7 @@
 package com.github.toastshaman.dropwizard.auth.jwt;
 
+import com.github.toastshaman.dropwizard.auth.jwt.exceptions.InvalidSignatureException;
+import com.github.toastshaman.dropwizard.auth.jwt.exceptions.JsonWebTokenException;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
 import com.github.toastshaman.dropwizard.auth.jwt.parser.DefaultJsonWebTokenParser;
 import com.google.common.base.Optional;
@@ -34,16 +36,18 @@ public class JWTAuthProvider<T> implements InjectableProvider<Auth, Parameter> {
         private static final String PREFIX = "bearer";
 
         private final Authenticator<JsonWebToken, T> authenticator;
-        private final JsonWebTokenVerifier tokenParser;
         private final String realm;
         private final boolean required;
 
+        private final JsonWebTokenVerifier tokenVerifier;
+        private final DefaultJsonWebTokenParser tokenParser = new DefaultJsonWebTokenParser();
+
         private JWTAuthInjectable(Authenticator<JsonWebToken, T> authenticator,
-                                JsonWebTokenVerifier tokenParser,
+                                JsonWebTokenVerifier tokenVerifier,
                                 String realm,
                                 boolean required) {
             this.authenticator = authenticator;
-            this.tokenParser = tokenParser;
+            this.tokenVerifier = tokenVerifier;
             this.realm = realm;
             this.required = required;
         }
@@ -57,9 +61,21 @@ public class JWTAuthProvider<T> implements InjectableProvider<Auth, Parameter> {
                     if (space > 0) {
                         final String method = header.substring(0, space);
                         if (PREFIX.equalsIgnoreCase(method)) {
-                            final String token = header.substring(space + 1);
-                            // TODO: parse token and verify the signature
-                            final Optional<T> result = authenticator.authenticate(new DefaultJsonWebTokenParser().parse(token));
+                            final String rawToken = header.substring(space + 1);
+
+                            JsonWebToken token = null;
+
+                            try {
+                                token = tokenParser.parse(rawToken);
+                                tokenVerifier.verifySignature(token);
+                            } catch (InvalidSignatureException e) {
+                                return null;
+                            } catch (Exception e) {
+                                throw new AuthenticationException(e.getMessage(), e);
+                            }
+
+                            final Optional<T> result = authenticator.authenticate(token);
+
                             if (result.isPresent()) {
                                 return result.get();
                             }
