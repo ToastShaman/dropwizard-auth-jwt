@@ -6,6 +6,6 @@ public interface JsonWebTokenVerifier {
 
     String algorithm();
 
-    boolean verifySignature(JsonWebToken token);
+    void verifySignature(JsonWebToken token);
 
 }

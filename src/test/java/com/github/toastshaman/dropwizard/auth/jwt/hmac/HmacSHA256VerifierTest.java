@@ -23,8 +23,6 @@ public class HmacSHA256VerifierTest {
 
         JsonWebToken token = new DefaultJsonWebTokenParser().parse(encodedToken);
 
-        boolean signaturesMatch = new HmacSHA256Verifier(key).verifySignature(token);
-
-        assertThat("The signatrues should have matched", signaturesMatch, equalTo(true));
+        new HmacSHA256Verifier(key).verifySignature(token);
     }
 }

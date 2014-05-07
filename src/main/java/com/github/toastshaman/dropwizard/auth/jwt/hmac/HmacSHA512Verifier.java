@@ -9,11 +9,16 @@ public class HmacSHA512Verifier extends KeyAware implements JsonWebTokenVerifier
 
     private static final String HMAC_SHA512_ALG = "HmacSHA512";
 
-    public HmacSHA512Verifier(byte[] secret) { super(secret, HMAC_SHA512_ALG); }
+    private final HmacVerifier hmacVerifier;
+
+    public HmacSHA512Verifier(byte[] secret) {
+        super(secret, HMAC_SHA512_ALG);
+        hmacVerifier = new HmacVerifier(hmac);
+    }
 
     @Override
     public String algorithm() { return HS512; }
 
     @Override
-    public boolean verifySignature(JsonWebToken token) { return new HmacVerifier(hmac).verifySignature(token); }
+    public void verifySignature(JsonWebToken token) { hmacVerifier.verifySignature(token); }
 }
