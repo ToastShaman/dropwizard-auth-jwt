@@ -6,13 +6,13 @@ import com.github.toastshaman.dropwizard.auth.jwt.exceptions.MalformedJsonWebTok
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
-import com.google.common.io.BaseEncoding;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.nio.charset.Charset;
 import java.util.List;
 
+import static com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenUtils.bytesOf;
+import static com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenUtils.toBase64;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
@@ -42,11 +42,7 @@ public class JsonWebToken {
 
     public byte[] getSignature() { return signature.orNull(); }
 
-    public String deserialize() { return Joiner.on(".").join(encode(toJson(header)), encode(toJson(claim))); }
-
-    private String encode(String input) {
-        return BaseEncoding.base64Url().omitPadding().encode(input.getBytes(Charset.forName("UTF-8")));
-    }
+    public String deserialize() { return Joiner.on(".").join(toBase64(bytesOf(toJson(header))), toBase64(bytesOf(toJson(claim)))); }
 
     private String toJson(Object input) {
         try {
