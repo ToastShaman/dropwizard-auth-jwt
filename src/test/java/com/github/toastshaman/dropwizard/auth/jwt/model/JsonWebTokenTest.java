@@ -7,7 +7,6 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-
 public class JsonWebTokenTest {
 
     @Test public void
@@ -22,14 +21,19 @@ public class JsonWebTokenTest {
 
         JsonWebToken token = JsonWebToken.encode()
                 .header(
-                        JsonWebTokenHeader.builder().typ("JWT").alg("HS256").build())
+                        JsonWebTokenHeader.builder()
+                                .typ("JWT")
+                                .alg("HS256")
+                                .build())
                 .claim(
-                        JsonWebTokenClaims.builder().iss("joe").exp(1300819380).param("http://example.com/is_root", true).build())
+                        JsonWebTokenClaims.builder()
+                                .iss("joe")
+                                .exp(1300819380)
+                                .param("http://example.com/is_root", true)
+                                .build())
                 .build();
 
-        HmacSHA256Signer signer = new HmacSHA256Signer(key);
-
-        final String encodedToken = signer.sign(token);
+        final String encodedToken = new HmacSHA256Signer(key).sign(token);
 
         assertThat(encodedToken, equalTo(expected));
     }

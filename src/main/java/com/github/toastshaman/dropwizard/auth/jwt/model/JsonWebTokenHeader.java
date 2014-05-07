@@ -5,12 +5,15 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import java.util.Map;
 
+import static com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenAlgorithms.*;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMap;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 public class JsonWebTokenHeader {
+
+    private static final String JWT_HEADER = "JWT";
 
     @JsonProperty("typ")
     @NotEmpty
@@ -65,4 +68,10 @@ public class JsonWebTokenHeader {
     }
 
     public static Builder builder() { return new Builder(); }
+
+    public static JsonWebTokenHeader HS256() { return new JsonWebTokenHeader(JWT_HEADER, HS256); }
+
+    public static JsonWebTokenHeader H384() { return new JsonWebTokenHeader(JWT_HEADER, HS384); }
+
+    public static JsonWebTokenHeader HS512() { return new JsonWebTokenHeader(JWT_HEADER, HS512); }
 }

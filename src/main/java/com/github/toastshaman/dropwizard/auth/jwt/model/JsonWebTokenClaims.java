@@ -52,7 +52,9 @@ public class JsonWebTokenClaims {
 
         private Map<String, Object> params = newHashMap();
 
-        public JsonWebTokenClaims build() { return new JsonWebTokenClaims(iss, exp, params); }
+        public JsonWebTokenClaims build() {
+            return new JsonWebTokenClaims(iss, exp, params);
+        }
 
         public Builder iss(String iss) {
             checkNotNull(iss);
