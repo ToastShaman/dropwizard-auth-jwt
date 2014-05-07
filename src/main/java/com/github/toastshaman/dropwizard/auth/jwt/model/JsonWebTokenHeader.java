@@ -71,7 +71,7 @@ public class JsonWebTokenHeader {
 
     public static JsonWebTokenHeader HS256() { return new JsonWebTokenHeader(JWT_HEADER, HS256); }
 
-    public static JsonWebTokenHeader H384() { return new JsonWebTokenHeader(JWT_HEADER, HS384); }
+    public static JsonWebTokenHeader HS384() { return new JsonWebTokenHeader(JWT_HEADER, HS384); }
 
     public static JsonWebTokenHeader HS512() { return new JsonWebTokenHeader(JWT_HEADER, HS512); }
 }
