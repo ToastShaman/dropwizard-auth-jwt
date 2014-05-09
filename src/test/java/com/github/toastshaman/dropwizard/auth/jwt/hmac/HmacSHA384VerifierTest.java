@@ -2,13 +2,12 @@ package com.github.toastshaman.dropwizard.auth.jwt.hmac;
 
 import com.github.toastshaman.dropwizard.auth.jwt.exceptions.InvalidSignatureException;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
-import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebTokenClaims;
+import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebTokenClaim;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebTokenHeader;
 import com.github.toastshaman.dropwizard.auth.jwt.parser.DefaultJsonWebTokenParser;
 import org.junit.Test;
 
 import static com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenUtils.bytesOf;
-import static com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenUtils.fromBase64;
 
 public class HmacSHA384VerifierTest {
 
@@ -26,7 +25,7 @@ public class HmacSHA384VerifierTest {
     public void
     throws_a_signature_invalid_exception_if_the_signature_does_not_match() {
         final HmacSHA384Signer signer = new HmacSHA384Signer(bytesOf("SECRET"));
-        final JsonWebToken token = JsonWebToken.builder().header(JsonWebTokenHeader.HS384()).claim(JsonWebTokenClaims.builder().iss("joe").build()).build();
+        final JsonWebToken token = JsonWebToken.builder().header(JsonWebTokenHeader.HS384()).claim(JsonWebTokenClaim.builder().iss("joe").build()).build();
         final String signedToken = signer.sign(token);
         final HmacSHA384Verifier verifier = new HmacSHA384Verifier(bytesOf("DIFFERENT_KEY"));
 

@@ -2,7 +2,7 @@ package com.github.toastshaman.dropwizard.auth.jwt.hmac;
 
 import com.github.toastshaman.dropwizard.auth.jwt.exceptions.InvalidSignatureException;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
-import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebTokenClaims;
+import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebTokenClaim;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebTokenHeader;
 import com.github.toastshaman.dropwizard.auth.jwt.parser.DefaultJsonWebTokenParser;
 import org.junit.Test;
@@ -32,7 +32,7 @@ public class HmacSHA256VerifierTest {
     public void
     throws_a_signature_invalid_exception_if_the_signature_does_not_match() {
         final HmacSHA256Signer signer = new HmacSHA256Signer(bytesOf("SECRET"));
-        final JsonWebToken token = JsonWebToken.builder().header(JsonWebTokenHeader.HS256()).claim(JsonWebTokenClaims.builder().iss("joe").build()).build();
+        final JsonWebToken token = JsonWebToken.builder().header(JsonWebTokenHeader.HS256()).claim(JsonWebTokenClaim.builder().iss("joe").build()).build();
         final String signedToken = signer.sign(token);
         final HmacSHA256Verifier verifier = new HmacSHA256Verifier(bytesOf("DIFFERENT_KEY"));
 

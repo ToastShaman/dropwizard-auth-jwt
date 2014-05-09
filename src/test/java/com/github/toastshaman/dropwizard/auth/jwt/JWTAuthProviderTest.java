@@ -4,9 +4,8 @@ import com.codahale.metrics.MetricRegistry;
 import com.github.toastshaman.dropwizard.auth.jwt.hmac.HmacSHA512Signer;
 import com.github.toastshaman.dropwizard.auth.jwt.hmac.HmacSHA512Verifier;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
-import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebTokenClaims;
+import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebTokenClaim;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebTokenHeader;
-import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.test.framework.AppDescriptor;
@@ -17,7 +16,6 @@ import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
 import io.dropwizard.jersey.DropwizardResourceConfig;
 import io.dropwizard.logging.LoggingFactory;
-import org.junit.Assert;
 import org.junit.Test;
 
 import javax.ws.rs.GET;
@@ -25,10 +23,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
-import java.nio.charset.Charset;
 
 import static com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenUtils.bytesOf;
-import static com.google.common.base.Charsets.UTF_8;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
@@ -81,7 +77,7 @@ public class JWTAuthProviderTest extends JerseyTest {
     public void transformsCredentialsToPrincipals() throws Exception {
         final byte[] TOKEN_SECRET_KEY = bytesOf("MySecretKey");
         final HmacSHA512Signer signer = new HmacSHA512Signer(TOKEN_SECRET_KEY);
-        final JsonWebToken token = JsonWebToken.builder().header(JsonWebTokenHeader.HS512()).claim(JsonWebTokenClaims.builder().param("principal", "good-guy").build()).build();
+        final JsonWebToken token = JsonWebToken.builder().header(JsonWebTokenHeader.HS512()).claim(JsonWebTokenClaim.builder().param("principal", "good-guy").build()).build();
         final String signedToken = signer.sign(token);
 
         assertThat(client().resource("/test").header(HttpHeaders.AUTHORIZATION, "Bearer " + signedToken).get(String.class), equalTo("good-guy"));
@@ -103,7 +99,7 @@ public class JWTAuthProviderTest extends JerseyTest {
         try {
             final byte[] TOKEN_SECRET_KEY = bytesOf("DIFFERENT_KEY");
             final HmacSHA512Signer signer = new HmacSHA512Signer(TOKEN_SECRET_KEY);
-            final JsonWebToken token = JsonWebToken.builder().header(JsonWebTokenHeader.HS512()).claim(JsonWebTokenClaims.builder().param("principal", "good-guy").build()).build();
+            final JsonWebToken token = JsonWebToken.builder().header(JsonWebTokenHeader.HS512()).claim(JsonWebTokenClaim.builder().param("principal", "good-guy").build()).build();
             final String signedToken = signer.sign(token);
 
             client().resource("/test").header(HttpHeaders.AUTHORIZATION, "Bearer " + signedToken).get(String.class);
@@ -119,7 +115,7 @@ public class JWTAuthProviderTest extends JerseyTest {
         try {
             final byte[] TOKEN_SECRET_KEY = bytesOf("MySecretKey");
             final HmacSHA512Signer signer = new HmacSHA512Signer(TOKEN_SECRET_KEY);
-            final JsonWebToken token = JsonWebToken.builder().header(JsonWebTokenHeader.HS512()).claim(JsonWebTokenClaims.builder().param("principal", "bad-guy").build()).build();
+            final JsonWebToken token = JsonWebToken.builder().header(JsonWebTokenHeader.HS512()).claim(JsonWebTokenClaim.builder().param("principal", "bad-guy").build()).build();
             final String signedToken = signer.sign(token);
 
             client().resource("/test").header(HttpHeaders.AUTHORIZATION, "Bearer " + signedToken).get(String.class);

@@ -23,13 +23,13 @@ public class JsonWebToken {
 
     private final JsonWebTokenHeader header;
 
-    private final JsonWebTokenClaims claim;
+    private final JsonWebTokenClaim claim;
 
     private Optional<byte[]> signature;
 
     private Optional<List<String>> rawToken = Optional.absent();
 
-    private JsonWebToken(JsonWebTokenHeader header, JsonWebTokenClaims claim, Optional<byte[]> signature, Optional<List<String>> rawToken) {
+    private JsonWebToken(JsonWebTokenHeader header, JsonWebTokenClaim claim, Optional<byte[]> signature, Optional<List<String>> rawToken) {
         this.header = header;
         this.claim = claim;
         this.signature = signature;
@@ -38,7 +38,7 @@ public class JsonWebToken {
 
     public JsonWebTokenHeader header() { return header; }
 
-    public JsonWebTokenClaims claim() { return claim; }
+    public JsonWebTokenClaim claim() { return claim; }
 
     public byte[] getSignature() { return signature.orNull(); }
 
@@ -63,7 +63,7 @@ public class JsonWebToken {
 
         private JsonWebTokenHeader header;
 
-        private JsonWebTokenClaims claim;
+        private JsonWebTokenClaim claim;
 
         private Optional<byte[]> signature = Optional.absent();
 
@@ -91,7 +91,7 @@ public class JsonWebToken {
         public DecoderBuilder claim(String claim) {
             checkArgument(isNotBlank(claim));
             try {
-                this.claim = mapper.readValue(claim, JsonWebTokenClaims.class);
+                this.claim = mapper.readValue(claim, JsonWebTokenClaim.class);
                 return this;
             } catch (Exception e) {
                 throw new MalformedJsonWebTokenException(format("The provided JWT claim is malformed: [%s]", claim), e);
@@ -117,7 +117,7 @@ public class JsonWebToken {
 
         private JsonWebTokenHeader header;
 
-        private JsonWebTokenClaims claim;
+        private JsonWebTokenClaim claim;
 
         public EncoderBuilder header(JsonWebTokenHeader header) {
             checkNotNull(header);
@@ -125,15 +125,15 @@ public class JsonWebToken {
             return this;
         }
 
-        public EncoderBuilder claim(JsonWebTokenClaims claim) {
+        public EncoderBuilder claim(JsonWebTokenClaim claim) {
             checkNotNull(claim);
             this.claim = claim;
             return this;
         }
 
         public JsonWebToken build() {
-            checkNotNull(claim);
-            checkNotNull(header);
+            checkNotNull(claim, "can not build a token without a JWT header");
+            checkNotNull(header, "can not build a token without a JWT claim");
             return new JsonWebToken(header, claim, Optional.<byte[]>absent(), Optional.<List<String>>absent());
         }
     }

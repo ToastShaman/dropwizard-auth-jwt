@@ -2,19 +2,22 @@ package com.github.toastshaman.dropwizard.auth.jwt.model;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.collect.ImmutableMap;
 import org.joda.time.DateTime;
-import org.joda.time.Instant;
 
 import java.util.Map;
 
+import static com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion.NON_NULL;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMap;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
-public class JsonWebTokenClaims {
+@JsonSerialize(include = NON_NULL)
+public class JsonWebTokenClaim {
 
     @JsonProperty("iss")
     private String iss;
@@ -22,21 +25,27 @@ public class JsonWebTokenClaims {
     @JsonProperty("exp")
     private Long exp;
 
+    @JsonProperty("iat")
+    private Long iat;
+
     private Map<String, Object> params = newHashMap();
 
-    private JsonWebTokenClaims() {
+    private JsonWebTokenClaim() {
         // we need an empty constructor for the Jackson mapper
     }
 
-    private JsonWebTokenClaims(String iss, Long exp, Map<String, Object> params) {
+    private JsonWebTokenClaim(String iss, Long iat, Long exp, Map<String, Object> params) {
         this.iss = iss;
         this.exp = exp;
+        this.iat = iat;
         this.params = ImmutableMap.copyOf(params);
     }
 
     public Long exp() { return exp; }
 
     public String iss() { return iss; }
+
+    public Long iat() { return iat; }
 
     @JsonAnySetter
     private void addParameter(String key, Object object) { this.params.put(key, object); }
@@ -52,9 +61,11 @@ public class JsonWebTokenClaims {
 
         private Long exp;
 
+        private Long iat;
+
         private Map<String, Object> params = newHashMap();
 
-        public JsonWebTokenClaims build() { return new JsonWebTokenClaims(iss, exp, params); }
+        public JsonWebTokenClaim build() { return new JsonWebTokenClaim(iss, iat, exp, params); }
 
         public Builder iss(String iss) {
             checkNotNull(iss);
@@ -66,6 +77,12 @@ public class JsonWebTokenClaims {
         public Builder exp(DateTime time) {
             checkNotNull(time);
             this.exp = time.getMillis() / 1000;
+            return this;
+        }
+
+        public Builder iat(DateTime time) {
+            checkNotNull(time);
+            this.iat = time.getMillis() / 1000;
             return this;
         }
 

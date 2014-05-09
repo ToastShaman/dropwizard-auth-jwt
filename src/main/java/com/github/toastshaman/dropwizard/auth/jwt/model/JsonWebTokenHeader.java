@@ -1,16 +1,19 @@
 package com.github.toastshaman.dropwizard.auth.jwt.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import java.util.Map;
 
+import static com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion.NON_NULL;
 import static com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenAlgorithms.*;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMap;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
+@JsonSerialize(include = NON_NULL)
 public class JsonWebTokenHeader {
 
     private static final String JWT_HEADER = "JWT";
