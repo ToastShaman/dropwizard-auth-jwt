@@ -20,8 +20,8 @@ public class ExpiryValidator implements JsonWebTokenValidator {
     @Override
     public void validate(JsonWebToken token) {
         if (token.claim() != null) {
-            Instant issuedAt = new Instant(fromNullable(token.claim().iat()).or(0L));
-            Instant expiration = new Instant(fromNullable(token.claim().exp()).or(Long.MAX_VALUE));
+            Instant issuedAt = fromNullable(toInstant(token.claim().iat())).or(now());
+            Instant expiration = fromNullable(toInstant(token.claim().exp())).or(new Instant(Long.MAX_VALUE));
 
             if (issuedAt.isAfter(expiration) || !inInterval(issuedAt, expiration)) {
                 throw new TokenExpiredException();
@@ -34,6 +34,11 @@ public class ExpiryValidator implements JsonWebTokenValidator {
         Instant now = now();
         Interval currentTimeWithSkew = new Interval(now.minus(acceptableClockSkew), now.plus(acceptableClockSkew));
         return interval.overlaps(currentTimeWithSkew);
+    }
+
+    private Instant toInstant(Long input) {
+        if (input == null) { return null; }
+        return new Instant(input * 1000);
     }
 
     private Instant now() { return new Instant(); }
