@@ -6,6 +6,7 @@ import com.github.toastshaman.dropwizard.auth.jwt.hmac.HmacSHA512Verifier;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebTokenClaim;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebTokenHeader;
+import com.github.toastshaman.dropwizard.auth.jwt.parser.DefaultJsonWebTokenParser;
 import com.google.common.base.Optional;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.test.framework.AppDescriptor;
@@ -56,8 +57,9 @@ public class JWTAuthProviderTest extends JerseyTest {
                 return Optional.absent();
             }
         };
+        final JsonWebTokenParser tokenParser = new DefaultJsonWebTokenParser();
         final HmacSHA512Verifier tokenVerifier = new HmacSHA512Verifier(TOKEN_SECRET_KEY);
-        config.getSingletons().add(new JWTAuthProvider<>(authenticator, tokenVerifier, "realm"));
+        config.getSingletons().add(new JWTAuthProvider<>(authenticator, tokenParser, tokenVerifier, "realm"));
         config.getSingletons().add(new ExampleResource());
         return new LowLevelAppDescriptor.Builder(config).build();
     }

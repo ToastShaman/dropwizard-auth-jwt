@@ -1,9 +1,6 @@
 package com.github.toastshaman.dropwizard.auth.jwt;
 
-import com.github.toastshaman.dropwizard.auth.jwt.exceptions.InvalidSignatureException;
-import com.github.toastshaman.dropwizard.auth.jwt.exceptions.JsonWebTokenException;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
-import com.github.toastshaman.dropwizard.auth.jwt.parser.DefaultJsonWebTokenParser;
 import com.google.common.base.Optional;
 import com.sun.jersey.api.core.HttpContext;
 import com.sun.jersey.api.model.Parameter;
@@ -40,13 +37,15 @@ public class JWTAuthProvider<T> implements InjectableProvider<Auth, Parameter> {
         private final boolean required;
 
         private final JsonWebTokenVerifier tokenVerifier;
-        private final DefaultJsonWebTokenParser tokenParser = new DefaultJsonWebTokenParser();
+        private final JsonWebTokenParser tokenParser;
 
         private JWTAuthInjectable(Authenticator<JsonWebToken, T> authenticator,
-                                JsonWebTokenVerifier tokenVerifier,
-                                String realm,
-                                boolean required) {
+                                  JsonWebTokenParser tokenParser,
+                                  JsonWebTokenVerifier tokenVerifier,
+                                  String realm,
+                                  boolean required) {
             this.authenticator = authenticator;
+            this.tokenParser = tokenParser;
             this.tokenVerifier = tokenVerifier;
             this.realm = realm;
             this.required = required;
@@ -99,7 +98,8 @@ public class JWTAuthProvider<T> implements InjectableProvider<Auth, Parameter> {
     }
 
     private final Authenticator<JsonWebToken, T> authenticator;
-    private final JsonWebTokenVerifier tokenParser;
+    private final JsonWebTokenParser tokenParser;
+    private final JsonWebTokenVerifier tokenVerifier;
     private final String realm;
 
     /**
@@ -107,11 +107,17 @@ public class JWTAuthProvider<T> implements InjectableProvider<Auth, Parameter> {
      *
      * @param authenticator the authenticator which will take the JWT bearer token and convert
      *                      them into instances of {@code T}
+     * @param tokenParser   the Json Web Token parser
+     * @param tokenVerifier the Json Web Token signature verifier
      * @param realm         the name of the authentication realm
      */
-    public JWTAuthProvider(Authenticator<JsonWebToken, T> authenticator, JsonWebTokenVerifier tokenParser, String realm) {
+    public JWTAuthProvider(Authenticator<JsonWebToken, T> authenticator,
+                           JsonWebTokenParser tokenParser,
+                           JsonWebTokenVerifier tokenVerifier,
+                           String realm) {
         this.authenticator = authenticator;
         this.tokenParser = tokenParser;
+        this.tokenVerifier = tokenVerifier;
         this.realm = realm;
     }
 
@@ -120,6 +126,6 @@ public class JWTAuthProvider<T> implements InjectableProvider<Auth, Parameter> {
 
     @Override
     public Injectable<?> getInjectable(ComponentContext ic, Auth a, Parameter c) {
-        return new JWTAuthInjectable<T>(authenticator, tokenParser, realm, a.required());
+        return new JWTAuthInjectable<T>(authenticator, tokenParser, tokenVerifier, realm, a.required());
     }
 }
