@@ -2,7 +2,6 @@ package com.github.toastshaman.dropwizard.auth.jwt.model;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.collect.ImmutableMap;
@@ -28,16 +27,25 @@ public class JsonWebTokenClaim {
     @JsonProperty("iat")
     private Long iat;
 
+    @JsonProperty("nbf")
+    private Long nbf;
+
     private Map<String, Object> params = newHashMap();
 
     private JsonWebTokenClaim() {
         // we need an empty constructor for the Jackson mapper
     }
 
-    private JsonWebTokenClaim(String iss, Long iat, Long exp, Map<String, Object> params) {
+    private JsonWebTokenClaim(
+            String iss,
+            Long iat,
+            Long exp,
+            Long nbf,
+            Map<String, Object> params) {
         this.iss = iss;
         this.exp = exp;
         this.iat = iat;
+        this.nbf = nbf;
         this.params = ImmutableMap.copyOf(params);
     }
 
@@ -46,6 +54,8 @@ public class JsonWebTokenClaim {
     public String iss() { return iss; }
 
     public Long iat() { return iat; }
+
+    public Long nbf() { return nbf; }
 
     @JsonAnySetter
     private void addParameter(String key, Object object) { this.params.put(key, object); }
@@ -63,9 +73,11 @@ public class JsonWebTokenClaim {
 
         private Long iat;
 
+        private Long nbf;
+
         private Map<String, Object> params = newHashMap();
 
-        public JsonWebTokenClaim build() { return new JsonWebTokenClaim(iss, iat, exp, params); }
+        public JsonWebTokenClaim build() { return new JsonWebTokenClaim(iss, iat, exp, nbf, params); }
 
         public Builder iss(String iss) {
             checkNotNull(iss);
@@ -83,6 +95,12 @@ public class JsonWebTokenClaim {
         public Builder iat(DateTime time) {
             checkNotNull(time);
             this.iat = time.getMillis() / 1000;
+            return this;
+        }
+
+        public Builder nbf(DateTime time) {
+            checkNotNull(time);
+            this.nbf = time.getMillis() / 1000;
             return this;
         }
 
