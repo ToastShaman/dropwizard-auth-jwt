@@ -13,3 +13,5 @@ hs_err_pid*
 .idea/
 dropwizard-auth-jwt.iml
 target/test-classes/logback-test.xml
+
+target

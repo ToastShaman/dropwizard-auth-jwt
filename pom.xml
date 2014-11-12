@@ -34,25 +34,27 @@
             <roles>
                 <role>committer</role>
             </roles>
+            <organization>toastshaman.github.io</organization>
+            <organizationUrl>https://toastshaman.github.io</organizationUrl>
         </developer>
     </developers>
 
     <scm>
-        <connection>scm:git:git://github.com/ToastShaman/dropwizard-auth-jwt.git</connection>
+        <connection>scm:git:git@github.com:ToastShaman/dropwizard-auth-jwt.git</connection>
         <developerConnection>scm:git:git@github.com:ToastShaman/dropwizard-auth-jwt.git</developerConnection>
-        <url>https://github.com/ToastShaman/dropwizard-auth-jwt.git</url>
+        <url>git@github.com:ToastShaman/dropwizard-auth-jwt.git</url>
         <tag>HEAD</tag>
     </scm>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/ToastShaman/dropwizard-auth-jwt/issues</url>
+    </issueManagement>
 
     <ciManagement>
         <system>Travis CI</system>
         <url>https://travis-ci.org/ToastShaman/dropwizard-auth-jwt</url>
     </ciManagement>
-
-    <issueManagement>
-        <url>https://github.com/ToastShaman/dropwizard-auth-jwt/issues</url>
-        <system>GitHub Issues</system>
-    </issueManagement>
 
     <dependencies>
         <dependency>
@@ -97,11 +99,37 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
+                <version>3.2</version>
                 <configuration>
                     <source>1.7</source>
                     <target>1.7</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.4</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
