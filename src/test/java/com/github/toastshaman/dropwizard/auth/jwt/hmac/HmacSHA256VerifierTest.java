@@ -9,7 +9,6 @@ import org.junit.Test;
 
 import static com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenUtils.bytesOf;
 import static com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenUtils.fromBase64;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 public class HmacSHA256VerifierTest {
 
@@ -32,7 +31,10 @@ public class HmacSHA256VerifierTest {
     public void
     throws_a_signature_invalid_exception_if_the_signature_does_not_match() {
         final HmacSHA256Signer signer = new HmacSHA256Signer(bytesOf("SECRET"));
-        final JsonWebToken token = JsonWebToken.builder().header(JsonWebTokenHeader.HS256()).claim(JsonWebTokenClaim.builder().iss("joe").build()).build();
+        final JsonWebToken token = JsonWebToken.builder()
+                .header(JsonWebTokenHeader.HS256())
+                .claim(JsonWebTokenClaim.builder().iss("joe").build())
+                .build();
         final String signedToken = signer.sign(token);
         final HmacSHA256Verifier verifier = new HmacSHA256Verifier(bytesOf("DIFFERENT_KEY"));
 

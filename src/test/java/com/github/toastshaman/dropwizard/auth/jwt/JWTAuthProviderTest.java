@@ -33,12 +33,17 @@ import static org.junit.Assert.fail;
 
 public class JWTAuthProviderTest extends JerseyTest {
 
-    static { LoggingFactory.bootstrap(); }
+    static {
+        LoggingFactory.bootstrap();
+    }
 
     @Path("/test/")
     @Produces(MediaType.TEXT_PLAIN)
     public static class ExampleResource {
-        @GET public String show(@Auth String principal) { return principal; }
+        @GET
+        public String show(@Auth String principal) {
+            return principal;
+        }
     }
 
     @Override

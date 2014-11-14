@@ -35,9 +35,13 @@ public class JsonWebTokenHeader {
         this.alg = alg;
     }
 
-    public String alg() { return alg; }
+    public String alg() {
+        return alg;
+    }
 
-    public String typ() { return typ; }
+    public String typ() {
+        return typ;
+    }
 
     public static class Builder {
 
@@ -70,11 +74,19 @@ public class JsonWebTokenHeader {
         }
     }
 
-    public static Builder builder() { return new Builder(); }
+    public static Builder builder() {
+        return new Builder();
+    }
 
-    public static JsonWebTokenHeader HS256() { return new JsonWebTokenHeader(JWT_HEADER, HS256); }
+    public static JsonWebTokenHeader HS256() {
+        return new JsonWebTokenHeader(JWT_HEADER, HS256);
+    }
 
-    public static JsonWebTokenHeader HS384() { return new JsonWebTokenHeader(JWT_HEADER, HS384); }
+    public static JsonWebTokenHeader HS384() {
+        return new JsonWebTokenHeader(JWT_HEADER, HS384);
+    }
 
-    public static JsonWebTokenHeader HS512() { return new JsonWebTokenHeader(JWT_HEADER, HS512); }
+    public static JsonWebTokenHeader HS512() {
+        return new JsonWebTokenHeader(JWT_HEADER, HS512);
+    }
 }

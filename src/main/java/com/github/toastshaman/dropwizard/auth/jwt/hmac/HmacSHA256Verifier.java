@@ -21,7 +21,9 @@ public class HmacSHA256Verifier extends KeyAware implements JsonWebTokenVerifier
     }
 
     @Override
-    public String algorithm() { return HS256; }
+    public String algorithm() {
+        return HS256;
+    }
 
     @Override
     public void verifySignature(JsonWebToken token) {

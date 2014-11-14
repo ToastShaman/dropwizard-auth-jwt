@@ -1,17 +1,11 @@
 package com.github.toastshaman.dropwizard.auth.jwt.parser;
 
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
 import org.junit.Test;
 
-import java.beans.Introspector;
-import java.beans.MethodDescriptor;
-import java.beans.PropertyDescriptor;
-
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 
 public class DefaultJsonWebTokenParserTest {
 

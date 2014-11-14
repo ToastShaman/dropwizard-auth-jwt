@@ -17,7 +17,7 @@ import io.dropwizard.setup.Environment;
 
 /**
  * A sample dropwizard application that shows how to set up the JWT Authentication provider.
- * <p>
+ * <p/>
  * The Authentication Provider will parse the tokens supplied in the "Authorization" HTTP header in each HTTP request
  * given your resource is protected with the @Auth annotation.
  */
@@ -65,6 +65,6 @@ public class JwtAuthApplication extends Application<MyConfiguration> {
 
     public static void main(String[] args) throws Exception {
         // new JwtAuthApplication().run(args);
-        new JwtAuthApplication().run(new String[] {"server"});
+        new JwtAuthApplication().run(new String[]{"server"});
     }
 }

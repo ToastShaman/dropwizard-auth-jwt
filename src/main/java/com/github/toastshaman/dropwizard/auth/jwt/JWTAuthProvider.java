@@ -87,8 +87,7 @@ public class JWTAuthProvider<T> implements InjectableProvider<Auth, Parameter> {
             if (required) {
                 final String challenge = String.format(CHALLENGE_FORMAT, realm);
                 throw new WebApplicationException(Response.status(Response.Status.UNAUTHORIZED)
-                        .header(HttpHeaders.WWW_AUTHENTICATE,
-                                challenge)
+                        .header(HttpHeaders.WWW_AUTHENTICATE, challenge)
                         .entity("Credentials are required to access this resource.")
                         .type(MediaType.TEXT_PLAIN_TYPE)
                         .build());
@@ -122,7 +121,9 @@ public class JWTAuthProvider<T> implements InjectableProvider<Auth, Parameter> {
     }
 
     @Override
-    public ComponentScope getScope() { return ComponentScope.PerRequest; }
+    public ComponentScope getScope() {
+        return ComponentScope.PerRequest;
+    }
 
     @Override
     public Injectable<?> getInjectable(ComponentContext ic, Auth a, Parameter c) {

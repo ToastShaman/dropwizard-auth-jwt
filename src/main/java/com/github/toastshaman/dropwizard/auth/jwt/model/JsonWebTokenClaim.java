@@ -49,21 +49,35 @@ public class JsonWebTokenClaim {
         this.params = ImmutableMap.copyOf(params);
     }
 
-    public Long exp() { return exp; }
+    public Long exp() {
+        return exp;
+    }
 
-    public String iss() { return iss; }
+    public String iss() {
+        return iss;
+    }
 
-    public Long iat() { return iat; }
+    public Long iat() {
+        return iat;
+    }
 
-    public Long nbf() { return nbf; }
+    public Long nbf() {
+        return nbf;
+    }
 
     @JsonAnySetter
-    private void addParameter(String key, Object object) { this.params.put(key, object); }
+    private void addParameter(String key, Object object) {
+        this.params.put(key, object);
+    }
 
     @JsonAnyGetter
-    private Map<String, Object> getParameters() { return params; }
+    private Map<String, Object> getParameters() {
+        return params;
+    }
 
-    public Object getParameter(String key) { return params.get(key); }
+    public Object getParameter(String key) {
+        return params.get(key);
+    }
 
     public static class Builder {
 
@@ -77,7 +91,9 @@ public class JsonWebTokenClaim {
 
         private Map<String, Object> params = newHashMap();
 
-        public JsonWebTokenClaim build() { return new JsonWebTokenClaim(iss, iat, exp, nbf, params); }
+        public JsonWebTokenClaim build() {
+            return new JsonWebTokenClaim(iss, iat, exp, nbf, params);
+        }
 
         public Builder iss(String iss) {
             checkNotNull(iss);
@@ -113,5 +129,7 @@ public class JsonWebTokenClaim {
         }
     }
 
-    public static Builder builder() { return new Builder(); }
+    public static Builder builder() {
+        return new Builder();
+    }
 }

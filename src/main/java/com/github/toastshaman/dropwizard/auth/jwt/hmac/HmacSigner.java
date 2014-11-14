@@ -12,7 +12,9 @@ public class HmacSigner {
 
     private final Mac hmac;
 
-    public HmacSigner(Mac hmac) { this.hmac = hmac; }
+    public HmacSigner(Mac hmac) {
+        this.hmac = hmac;
+    }
 
     public String sign(JsonWebToken token) {
         checkNotNull(token);
@@ -22,5 +24,7 @@ public class HmacSigner {
         return Joiner.on(".").join(payload, signature);
     }
 
-    private byte[] sign(byte[] input) { return hmac.doFinal(input); }
+    private byte[] sign(byte[] input) {
+        return hmac.doFinal(input);
+    }
 }

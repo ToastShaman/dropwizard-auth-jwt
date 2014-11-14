@@ -16,7 +16,9 @@ public class HmacVerifier {
 
     private final Mac hmac;
 
-    public HmacVerifier(Mac hmac) { this.hmac = hmac; }
+    public HmacVerifier(Mac hmac) {
+        this.hmac = hmac;
+    }
 
     public void verifySignature(JsonWebToken token) {
         checkArgument(token.getRawToken().isPresent());
@@ -36,6 +38,8 @@ public class HmacVerifier {
         return hmac.doFinal(bytesOf(concatenate(pieces)));
     }
 
-    private String concatenate(List<String> pieces) { return Joiner.on(".").join(pieces.get(0), pieces.get(1)); }
+    private String concatenate(List<String> pieces) {
+        return Joiner.on(".").join(pieces.get(0), pieces.get(1));
+    }
 
 }

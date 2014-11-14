@@ -16,7 +16,10 @@ public class HmacSHA384SignerTest {
     public void
     calculates_a_valid_signature() {
         final HmacSHA384Signer signer = new HmacSHA384Signer(bytesOf("SECRET"));
-        final JsonWebToken token = JsonWebToken.builder().header(JsonWebTokenHeader.HS384()).claim(JsonWebTokenClaim.builder().iss("joe").build()).build();
+        final JsonWebToken token = JsonWebToken.builder()
+                .header(JsonWebTokenHeader.HS384())
+                .claim(JsonWebTokenClaim.builder().iss("joe").build())
+                .build();
         final String signedToken = signer.sign(token);
 
         final String hmac = Splitter.on(".").splitToList(signedToken).get(2);

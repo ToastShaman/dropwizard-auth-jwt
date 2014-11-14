@@ -9,7 +9,8 @@ import org.junit.Test;
 
 public class ExpiryValidatorTest {
 
-    @Test public void
+    @Test
+    public void
     passes_validation_for_non_expired_token() {
 
         JsonWebToken token = JsonWebToken.builder()
@@ -27,7 +28,8 @@ public class ExpiryValidatorTest {
         validator.validate(token);
     }
 
-    @Test public void
+    @Test
+    public void
     passes_validation_for_token_without_any_time_constraints() {
 
         JsonWebToken token = JsonWebToken.builder()
@@ -40,7 +42,8 @@ public class ExpiryValidatorTest {
         validator.validate(token);
     }
 
-    @Test(expected = TokenExpiredException.class) public void
+    @Test(expected = TokenExpiredException.class)
+    public void
     rejects_token_because_it_is_not_valid_until_tomorrow() {
 
         JsonWebToken token = JsonWebToken.builder()
@@ -53,7 +56,8 @@ public class ExpiryValidatorTest {
         validator.validate(token);
     }
 
-    @Test(expected = TokenExpiredException.class) public void
+    @Test(expected = TokenExpiredException.class)
+    public void
     rejects_token_because_it_has_expired() {
 
         JsonWebToken token = JsonWebToken.builder()
@@ -66,7 +70,8 @@ public class ExpiryValidatorTest {
         validator.validate(token);
     }
 
-    @Test(expected = TokenExpiredException.class) public void
+    @Test(expected = TokenExpiredException.class)
+    public void
     rejects_token_because_it_was_issued_after_it_has_expired() {
 
         JsonWebToken token = JsonWebToken.builder()

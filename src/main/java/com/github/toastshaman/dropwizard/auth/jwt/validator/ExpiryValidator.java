@@ -13,9 +13,13 @@ public class ExpiryValidator implements JsonWebTokenValidator {
 
     private final Duration acceptableClockSkew;
 
-    public ExpiryValidator(Duration skew) { this.acceptableClockSkew = skew; }
+    public ExpiryValidator(Duration skew) {
+        this.acceptableClockSkew = skew;
+    }
 
-    public ExpiryValidator() { this.acceptableClockSkew = Duration.standardMinutes(2); }
+    public ExpiryValidator() {
+        this.acceptableClockSkew = Duration.standardMinutes(2);
+    }
 
     @Override
     public void validate(JsonWebToken token) {
@@ -38,9 +42,13 @@ public class ExpiryValidator implements JsonWebTokenValidator {
     }
 
     private Instant toInstant(Long input) {
-        if (input == null) { return null; }
+        if (input == null) {
+            return null;
+        }
         return new Instant(input * 1000);
     }
 
-    private Instant now() { return new Instant(); }
+    private Instant now() {
+        return new Instant();
+    }
 }

@@ -21,7 +21,9 @@ public class HmacSHA384Signer extends KeyAware implements JsonWebTokenSigner {
     }
 
     @Override
-    public String algorithm() { return HS384; }
+    public String algorithm() {
+        return HS384;
+    }
 
     @Override
     public String sign(JsonWebToken token) {

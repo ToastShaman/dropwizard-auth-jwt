@@ -14,7 +14,11 @@ public class HmacSHA512VerifierTest {
     @Test
     public void
     verifies_a_valid_signature() {
-        final String encodedToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJqb2UiLCJleHAiOm51bGx9.JFtrDyI2ODV5I_aVfX7BnIClMqXi2SEDbRI2XTL2fV6veWICptkPi6OUJUHhSP9v_7rX8brgHJn-gbDmla_aEw";
+        final String encodedToken = ""
+                + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9"
+                + ".eyJpc3MiOiJqb2UiLCJleHAiOm51bGx9"
+                + ".JFtrDyI2ODV5I_aVfX7BnIClMqXi2SEDbRI2XTL2fV6veWICptkPi6OUJUHhSP9v_7rX8brgHJn-gbDmla_aEw";
+
         final byte[] key = bytesOf("SECRET");
         final JsonWebToken token = new DefaultJsonWebTokenParser().parse(encodedToken);
         final HmacSHA512Verifier verifier = new HmacSHA512Verifier(key);
@@ -25,7 +29,10 @@ public class HmacSHA512VerifierTest {
     public void
     throws_a_signature_invalid_exception_if_the_signature_does_not_match() {
         final HmacSHA512Signer signer = new HmacSHA512Signer(bytesOf("SECRET"));
-        final JsonWebToken token = JsonWebToken.builder().header(JsonWebTokenHeader.HS512()).claim(JsonWebTokenClaim.builder().iss("joe").build()).build();
+        final JsonWebToken token = JsonWebToken.builder()
+                .header(JsonWebTokenHeader.HS512())
+                .claim(JsonWebTokenClaim.builder().iss("joe").build())
+                .build();
         final String signedToken = signer.sign(token);
         final HmacSHA512Verifier verifier = new HmacSHA512Verifier(bytesOf("DIFFERENT_KEY"));
 

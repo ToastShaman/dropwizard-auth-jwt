@@ -36,13 +36,21 @@ public class JsonWebToken {
         this.rawToken = rawToken;
     }
 
-    public JsonWebTokenHeader header() { return header; }
+    public JsonWebTokenHeader header() {
+        return header;
+    }
 
-    public JsonWebTokenClaim claim() { return claim; }
+    public JsonWebTokenClaim claim() {
+        return claim;
+    }
 
-    public byte[] getSignature() { return signature.orNull(); }
+    public byte[] getSignature() {
+        return signature.orNull();
+    }
 
-    public String deserialize() { return Joiner.on(".").join(toBase64(bytesOf(toJson(header))), toBase64(bytesOf(toJson(claim)))); }
+    public String deserialize() {
+        return Joiner.on(".").join(toBase64(bytesOf(toJson(header))), toBase64(bytesOf(toJson(claim))));
+    }
 
     private String toJson(Object input) {
         try {
@@ -55,7 +63,9 @@ public class JsonWebToken {
         }
     }
 
-    public Optional<List<String>> getRawToken() { return rawToken; }
+    public Optional<List<String>> getRawToken() {
+        return rawToken;
+    }
 
     public static class DecoderBuilder {
 
@@ -73,8 +83,13 @@ public class JsonWebToken {
             checkNotNull(header);
             checkNotNull(claim);
             checkNotNull(rawToken);
-            if (signature.isPresent()) { checkArgument(signature.get().length > 0); }
-            if (rawToken.isPresent()) { checkArgument(rawToken.get().size() == 3); };
+            if (signature.isPresent()) {
+                checkArgument(signature.get().length > 0);
+            }
+            if (rawToken.isPresent()) {
+                checkArgument(rawToken.get().size() == 3);
+            }
+            ;
             return new JsonWebToken(header, claim, signature, rawToken);
         }
 
@@ -138,7 +153,11 @@ public class JsonWebToken {
         }
     }
 
-    public static DecoderBuilder parser() { return new DecoderBuilder(); }
+    public static DecoderBuilder parser() {
+        return new DecoderBuilder();
+    }
 
-    public static EncoderBuilder builder() { return new EncoderBuilder(); }
+    public static EncoderBuilder builder() {
+        return new EncoderBuilder();
+    }
 }

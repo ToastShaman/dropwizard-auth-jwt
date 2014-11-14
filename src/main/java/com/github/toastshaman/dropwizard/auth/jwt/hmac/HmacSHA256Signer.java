@@ -1,15 +1,10 @@
 package com.github.toastshaman.dropwizard.auth.jwt.hmac;
 
-import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenAlgorithms;
 import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenSigner;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
-import com.google.common.base.Preconditions;
-import org.apache.commons.lang.StringUtils;
 
-import static com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenAlgorithms.*;
 import static com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenAlgorithms.HS256;
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkState;
 
 public class HmacSHA256Signer extends KeyAware implements JsonWebTokenSigner {
 
@@ -23,7 +18,9 @@ public class HmacSHA256Signer extends KeyAware implements JsonWebTokenSigner {
     }
 
     @Override
-    public String algorithm() { return HS256; }
+    public String algorithm() {
+        return HS256;
+    }
 
     @Override
     public String sign(JsonWebToken token) {

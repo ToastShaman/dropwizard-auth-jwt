@@ -25,7 +25,10 @@ public class HmacSHA384VerifierTest {
     public void
     throws_a_signature_invalid_exception_if_the_signature_does_not_match() {
         final HmacSHA384Signer signer = new HmacSHA384Signer(bytesOf("SECRET"));
-        final JsonWebToken token = JsonWebToken.builder().header(JsonWebTokenHeader.HS384()).claim(JsonWebTokenClaim.builder().iss("joe").build()).build();
+        final JsonWebToken token = JsonWebToken.builder()
+                .header(JsonWebTokenHeader.HS384())
+                .claim(JsonWebTokenClaim.builder().iss("joe").build())
+                .build();
         final String signedToken = signer.sign(token);
         final HmacSHA384Verifier verifier = new HmacSHA384Verifier(bytesOf("DIFFERENT_KEY"));
 

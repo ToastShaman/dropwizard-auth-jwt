@@ -10,8 +10,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class JsonWebTokenTest {
 
-    @Test public void
-    build_a_valid_token() {
+    @Test
+    public void
+    builds_a_valid_token() {
 
         final String expected = ""
                 + "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9"
@@ -22,14 +23,12 @@ public class JsonWebTokenTest {
 
         JsonWebToken token = JsonWebToken.builder()
                 .header(JsonWebTokenHeader.HS256())
-                .claim(
-                        JsonWebTokenClaim.builder()
+                .claim(JsonWebTokenClaim.builder()
                                 .iss("joe")
                                 .exp(DateTime.now().withMillis(1300819380000L))
                                 .param("http://example.com/is_root", true)
                                 .build()
-                )
-                .build();
+                ).build();
 
         final String encodedToken = new HmacSHA256Signer(key).sign(token);
 
