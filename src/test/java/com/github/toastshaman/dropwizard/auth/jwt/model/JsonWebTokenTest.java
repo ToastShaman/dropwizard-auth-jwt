@@ -24,8 +24,8 @@ public class JsonWebTokenTest {
         JsonWebToken token = JsonWebToken.builder()
                 .header(JsonWebTokenHeader.HS256())
                 .claim(JsonWebTokenClaim.builder()
-                                .iss("joe")
-                                .exp(DateTime.now().withMillis(1300819380000L))
+                                .issuer("joe")
+                                .expiration(DateTime.now().withMillis(1300819380000L))
                                 .param("http://example.com/is_root", true)
                                 .build()
                 ).build();

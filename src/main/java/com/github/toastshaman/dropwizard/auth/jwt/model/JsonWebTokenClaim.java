@@ -18,16 +18,16 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
 @JsonSerialize(include = NON_NULL)
 public class JsonWebTokenClaim {
 
-    @JsonProperty("iss")
+    @JsonProperty("issuer")
     private String iss;
 
-    @JsonProperty("exp")
+    @JsonProperty("expiration")
     private Long exp;
 
-    @JsonProperty("iat")
+    @JsonProperty("issuedAt")
     private Long iat;
 
-    @JsonProperty("nbf")
+    @JsonProperty("notBefore")
     private Long nbf;
 
     private Map<String, Object> params = newHashMap();
@@ -95,26 +95,26 @@ public class JsonWebTokenClaim {
             return new JsonWebTokenClaim(iss, iat, exp, nbf, params);
         }
 
-        public Builder iss(String iss) {
+        public Builder issuer(String iss) {
             checkNotNull(iss);
             checkArgument(isNotBlank(iss));
             this.iss = iss;
             return this;
         }
 
-        public Builder exp(DateTime time) {
+        public Builder expiration(DateTime time) {
             checkNotNull(time);
             this.exp = time.getMillis() / 1000;
             return this;
         }
 
-        public Builder iat(DateTime time) {
+        public Builder issuedAt(DateTime time) {
             checkNotNull(time);
             this.iat = time.getMillis() / 1000;
             return this;
         }
 
-        public Builder nbf(DateTime time) {
+        public Builder notBefore(DateTime time) {
             checkNotNull(time);
             this.nbf = time.getMillis() / 1000;
             return this;

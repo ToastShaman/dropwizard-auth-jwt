@@ -18,7 +18,7 @@ public class HmacSHA512SignerTest {
         final HmacSHA512Signer signer = new HmacSHA512Signer(bytesOf("SECRET"));
         final JsonWebToken token = JsonWebToken.builder()
                 .header(JsonWebTokenHeader.HS512())
-                .claim(JsonWebTokenClaim.builder().iss("joe").build())
+                .claim(JsonWebTokenClaim.builder().issuer("joe").build())
                 .build();
         final String signedToken = signer.sign(token);
 

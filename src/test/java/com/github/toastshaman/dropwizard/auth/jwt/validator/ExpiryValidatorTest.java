@@ -17,8 +17,8 @@ public class ExpiryValidatorTest {
                 .header(JsonWebTokenHeader.HS256())
                 .claim(
                         JsonWebTokenClaim.builder()
-                                .iat(DateTime.now().minusDays(1))
-                                .exp(DateTime.now().plusDays(1))
+                                .issuedAt(DateTime.now().minusDays(1))
+                                .expiration(DateTime.now().plusDays(1))
                                 .build()
                 )
                 .build();
@@ -48,7 +48,7 @@ public class ExpiryValidatorTest {
 
         JsonWebToken token = JsonWebToken.builder()
                 .header(JsonWebTokenHeader.HS256())
-                .claim(JsonWebTokenClaim.builder().nbf(DateTime.now().plusDays(1)).build())
+                .claim(JsonWebTokenClaim.builder().notBefore(DateTime.now().plusDays(1)).build())
                 .build();
 
         ExpiryValidator validator = new ExpiryValidator();
@@ -62,7 +62,7 @@ public class ExpiryValidatorTest {
 
         JsonWebToken token = JsonWebToken.builder()
                 .header(JsonWebTokenHeader.HS256())
-                .claim(JsonWebTokenClaim.builder().exp(DateTime.now().minusDays(1)).build())
+                .claim(JsonWebTokenClaim.builder().expiration(DateTime.now().minusDays(1)).build())
                 .build();
 
         ExpiryValidator validator = new ExpiryValidator();
@@ -77,8 +77,8 @@ public class ExpiryValidatorTest {
         JsonWebToken token = JsonWebToken.builder()
                 .header(JsonWebTokenHeader.HS256())
                 .claim(JsonWebTokenClaim.builder()
-                        .iat(DateTime.now().plusDays(3))
-                        .exp(DateTime.now().minusDays(1)).build())
+                        .issuedAt(DateTime.now().plusDays(3))
+                        .expiration(DateTime.now().minusDays(1)).build())
                 .build();
 
         ExpiryValidator validator = new ExpiryValidator();

@@ -18,11 +18,11 @@ public class JsonWebTokenHeader {
 
     private static final String JWT_HEADER = "JWT";
 
-    @JsonProperty("typ")
+    @JsonProperty("type")
     @NotEmpty
     private String typ;
 
-    @JsonProperty("alg")
+    @JsonProperty("algorithm")
     @NotEmpty
     private String alg;
 
@@ -59,14 +59,14 @@ public class JsonWebTokenHeader {
             return new JsonWebTokenHeader(typ, alg);
         }
 
-        public Builder alg(String alg) {
+        public Builder algorithm(String alg) {
             checkNotNull(alg);
             checkArgument(isNotBlank(alg));
             this.alg = alg.toUpperCase();
             return this;
         }
 
-        public Builder typ(String typ) {
+        public Builder type(String typ) {
             checkNotNull(typ);
             checkArgument(isNotBlank(typ));
             this.typ = typ.toUpperCase();

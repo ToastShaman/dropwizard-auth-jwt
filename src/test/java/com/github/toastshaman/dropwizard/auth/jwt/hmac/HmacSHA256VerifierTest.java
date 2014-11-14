@@ -33,7 +33,7 @@ public class HmacSHA256VerifierTest {
         final HmacSHA256Signer signer = new HmacSHA256Signer(bytesOf("SECRET"));
         final JsonWebToken token = JsonWebToken.builder()
                 .header(JsonWebTokenHeader.HS256())
-                .claim(JsonWebTokenClaim.builder().iss("joe").build())
+                .claim(JsonWebTokenClaim.builder().issuer("joe").build())
                 .build();
         final String signedToken = signer.sign(token);
         final HmacSHA256Verifier verifier = new HmacSHA256Verifier(bytesOf("DIFFERENT_KEY"));

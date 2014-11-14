@@ -27,7 +27,7 @@ public class HmacSHA384VerifierTest {
         final HmacSHA384Signer signer = new HmacSHA384Signer(bytesOf("SECRET"));
         final JsonWebToken token = JsonWebToken.builder()
                 .header(JsonWebTokenHeader.HS384())
-                .claim(JsonWebTokenClaim.builder().iss("joe").build())
+                .claim(JsonWebTokenClaim.builder().issuer("joe").build())
                 .build();
         final String signedToken = signer.sign(token);
         final HmacSHA384Verifier verifier = new HmacSHA384Verifier(bytesOf("DIFFERENT_KEY"));

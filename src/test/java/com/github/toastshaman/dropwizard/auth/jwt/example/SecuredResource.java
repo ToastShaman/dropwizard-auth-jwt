@@ -33,7 +33,7 @@ public class SecuredResource {
                 .header(JsonWebTokenHeader.HS512())
                 .claim(JsonWebTokenClaim.builder()
                         .param("principal", "good-guy")
-                        .iat(new DateTime().plusHours(1))
+                        .issuedAt(new DateTime().plusHours(1))
                         .build())
                 .build();
         final String signedToken = signer.sign(token);
