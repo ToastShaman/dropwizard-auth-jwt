@@ -18,16 +18,16 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
 @JsonSerialize(include = NON_NULL)
 public class JsonWebTokenClaim {
 
-    @JsonProperty("issuer")
+    @JsonProperty("iss")
     private String iss;
 
-    @JsonProperty("expiration")
+    @JsonProperty("exp")
     private Long exp;
 
-    @JsonProperty("issuedAt")
+    @JsonProperty("iat")
     private Long iat;
 
-    @JsonProperty("notBefore")
+    @JsonProperty("nbf")
     private Long nbf;
 
     private Map<String, Object> params = newHashMap();
@@ -49,19 +49,19 @@ public class JsonWebTokenClaim {
         this.params = ImmutableMap.copyOf(params);
     }
 
-    public Long exp() {
+    public Long expiration() {
         return exp;
     }
 
-    public String iss() {
+    public String issuer() {
         return iss;
     }
 
-    public Long iat() {
+    public Long issuedAt() {
         return iat;
     }
 
-    public Long nbf() {
+    public Long notBefore() {
         return nbf;
     }
 

@@ -24,9 +24,9 @@ public class ExpiryValidator implements JsonWebTokenValidator {
     @Override
     public void validate(JsonWebToken token) {
         if (token.claim() != null) {
-            Instant issuedAt = fromNullable(toInstant(token.claim().iat())).or(now());
-            Instant expiration = fromNullable(toInstant(token.claim().exp())).or(new Instant(Long.MAX_VALUE));
-            Instant notBefore = fromNullable(toInstant(token.claim().nbf())).or(now());
+            Instant issuedAt = fromNullable(toInstant(token.claim().issuedAt())).or(now());
+            Instant expiration = fromNullable(toInstant(token.claim().expiration())).or(new Instant(Long.MAX_VALUE));
+            Instant notBefore = fromNullable(toInstant(token.claim().notBefore())).or(now());
 
             if (issuedAt.isAfter(expiration) || notBefore.isAfterNow() || !inInterval(issuedAt, expiration)) {
                 throw new TokenExpiredException();

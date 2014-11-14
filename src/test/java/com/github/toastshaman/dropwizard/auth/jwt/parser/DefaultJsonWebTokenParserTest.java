@@ -23,11 +23,11 @@ public class DefaultJsonWebTokenParserTest {
         assertThat(token.header(), notNullValue());
         assertThat(token.claim(), notNullValue());
 
-        assertThat(token.header().typ(), equalTo("JWT"));
+        assertThat(token.header().type(), equalTo("JWT"));
         assertThat(token.header().alg(), equalTo("HS256"));
 
-        assertThat(token.claim().iss(), equalTo("joe"));
-        assertThat(token.claim().exp(), equalTo(1300819380L));
+        assertThat(token.claim().issuer(), equalTo("joe"));
+        assertThat(token.claim().expiration(), equalTo(1300819380L));
         assertThat((Boolean) token.claim().getParameter("http://example.com/is_root"), equalTo(true));
     }
 }

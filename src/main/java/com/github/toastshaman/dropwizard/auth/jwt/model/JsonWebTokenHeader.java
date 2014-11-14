@@ -18,11 +18,11 @@ public class JsonWebTokenHeader {
 
     private static final String JWT_HEADER = "JWT";
 
-    @JsonProperty("type")
+    @JsonProperty("typ")
     @NotEmpty
     private String typ;
 
-    @JsonProperty("algorithm")
+    @JsonProperty("alg")
     @NotEmpty
     private String alg;
 
@@ -39,7 +39,7 @@ public class JsonWebTokenHeader {
         return alg;
     }
 
-    public String typ() {
+    public String type() {
         return typ;
     }
 
