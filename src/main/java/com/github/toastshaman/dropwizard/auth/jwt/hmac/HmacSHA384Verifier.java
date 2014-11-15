@@ -8,22 +8,48 @@ import static com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenAlgorithms.
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 
+/**
+ * This class can be used to verify the signature of a previously signed bearer token.
+ *
+ * <pre>{@code
+ * final String encodedToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzM4NCJ9"
+ *     + ".eyJpc3MiOiJqb2UiLCJleHAiOm51bGx9"
+ *     + ".yS0gHKcZXzOd5rR1v9g7WMOyv-TML_eDwxY_pk2NBvivoYk3YibsRk_zL9YUauJI";
+ *
+ * final byte[] key = bytesOf("SECRET");
+ * final JsonWebToken token = new DefaultJsonWebTokenParser().parse(encodedToken);
+ * final HmacSHA384Verifier verifier = new HmacSHA384Verifier(key);
+ * verifier.verifySignature(token);
+ *}</pre>
+ */
 public class HmacSHA384Verifier extends KeyAware implements JsonWebTokenVerifier {
 
     private static final String HMAC_SHA384_ALG = "HmacSHA384";
 
     private final HmacVerifier hmacVerifier;
 
+    /**
+     * Constructs a bearer token verifier that verifies the signature of a previously signed bearer token.
+     * To successfully verify the token's signature it needs to be constructed with the same secret
+     * that was used to sign the token.
+     * @param secret the secret used to sign the bearer token
+     */
     public HmacSHA384Verifier(byte[] secret) {
         super(secret, HMAC_SHA384_ALG);
         hmacVerifier = new HmacVerifier(hmac);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String algorithm() {
         return HS384;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void verifySignature(JsonWebToken token) {
         checkArgument(token.header().alg().equals(HS384), "Can not verify a %s with a %s verifier", token.header().alg(), HS384);

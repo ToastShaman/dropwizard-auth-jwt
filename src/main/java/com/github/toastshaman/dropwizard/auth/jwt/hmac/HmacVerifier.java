@@ -16,7 +16,7 @@ public class HmacVerifier {
 
     private final Mac hmac;
 
-    public HmacVerifier(Mac hmac) {
+    /* package */ HmacVerifier(Mac hmac) {
         this.hmac = hmac;
     }
 

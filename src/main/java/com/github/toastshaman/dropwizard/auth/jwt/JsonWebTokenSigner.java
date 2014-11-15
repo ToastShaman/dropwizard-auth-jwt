@@ -4,16 +4,6 @@ import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
 
 /**
  * Used for classes that want to sign a newly created bearer token.
- *
- * <pre>{@code
- * final HmacSHA512Signer signer = new HmacSHA512Signer(bytesOf("SECRET"));
- * final JsonWebToken token = JsonWebToken.builder()
- *     .header(JsonWebTokenHeader.HS512())
- *     .claim(JsonWebTokenClaim.builder().issuer("joe").build())
- *     .build();
- *
- * final String signedToken = signer.sign(token);
- * }</pre>
  */
 public interface JsonWebTokenSigner {
 

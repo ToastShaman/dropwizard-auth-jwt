@@ -21,7 +21,7 @@ public abstract class KeyAware {
 
     protected Mac hmac;
 
-    public KeyAware(byte[] secret, String algorithm) {
+    /* package */ KeyAware(byte[] secret, String algorithm) {
         checkNotNull(secret);
         checkNotNull(algorithm);
         checkArgument(isNotEmpty(algorithm));

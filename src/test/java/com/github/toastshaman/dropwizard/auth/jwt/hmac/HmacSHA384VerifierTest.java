@@ -14,7 +14,10 @@ public class HmacSHA384VerifierTest {
     @Test
     public void
     verifies_a_valid_signature() {
-        final String encodedToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJqb2UiLCJleHAiOm51bGx9.yS0gHKcZXzOd5rR1v9g7WMOyv-TML_eDwxY_pk2NBvivoYk3YibsRk_zL9YUauJI";
+        final String encodedToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzM4NCJ9"
+                + ".eyJpc3MiOiJqb2UiLCJleHAiOm51bGx9"
+                + ".yS0gHKcZXzOd5rR1v9g7WMOyv-TML_eDwxY_pk2NBvivoYk3YibsRk_zL9YUauJI";
+
         final byte[] key = bytesOf("SECRET");
         final JsonWebToken token = new DefaultJsonWebTokenParser().parse(encodedToken);
         final HmacSHA384Verifier verifier = new HmacSHA384Verifier(key);
