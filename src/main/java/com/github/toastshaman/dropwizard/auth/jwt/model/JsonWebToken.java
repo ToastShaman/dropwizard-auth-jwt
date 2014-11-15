@@ -37,6 +37,7 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
  *   final String signedToken = signer.sign(token);
  *   return singletonMap("token", signedToken);
  * }
+ * }</pre>
  */
 public class JsonWebToken {
 
