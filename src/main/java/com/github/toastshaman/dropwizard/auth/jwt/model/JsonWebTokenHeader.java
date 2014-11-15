@@ -13,6 +13,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMap;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
+/**
+ * JSON representation of the token header.
+ */
 @JsonSerialize(include = NON_NULL)
 public class JsonWebTokenHeader {
 
@@ -35,10 +38,27 @@ public class JsonWebTokenHeader {
         this.alg = alg;
     }
 
-    public String alg() {
+    /**
+     * The algorithm used to sign the token.
+     * @return the algorithm
+     */
+    public String algorithm() {
         return alg;
     }
 
+    /**
+     * The typ (type) Header Parameter defined by [JWS] and [JWE] is used by JWT applications to declare
+     * the MIME Media Type [IANA.MediaTypes] of this complete token. This is intended for use by the JWT
+     * application when values that are not JWTs could also be present in an application data structure that
+     * can contain a JWT object; the application can use this value to disambiguate among the different
+     * kinds of objects that might be present. It will typically not be used by applications when it
+     * is already known that the object is a JWT. This parameter is ignored by JWT implementations;
+     * any processing of this parameter is performed by the JWT application. If present,
+     * it is RECOMMENDED that its value be JWT to indicate that this object is a JWT. While media
+     * type names are not case-sensitive, it is RECOMMENDED that JWT always be spelled using uppercase characters
+     * for compatibility with legacy implementations. Use of this Header Parameter is OPTIONAL.
+     * @return the type
+     */
     public String type() {
         return typ;
     }
@@ -59,6 +79,10 @@ public class JsonWebTokenHeader {
             return new JsonWebTokenHeader(typ, alg);
         }
 
+        /**
+         * The algorithm used to sign the token.
+         * @param alg the algorithm
+         */
         public Builder algorithm(String alg) {
             checkNotNull(alg);
             checkArgument(isNotBlank(alg));
@@ -66,6 +90,19 @@ public class JsonWebTokenHeader {
             return this;
         }
 
+        /**
+         * The typ (type) Header Parameter defined by [JWS] and [JWE] is used by JWT applications to declare
+         * the MIME Media Type [IANA.MediaTypes] of this complete token. This is intended for use by the JWT
+         * application when values that are not JWTs could also be present in an application data structure that
+         * can contain a JWT object; the application can use this value to disambiguate among the different
+         * kinds of objects that might be present. It will typically not be used by applications when it
+         * is already known that the object is a JWT. This parameter is ignored by JWT implementations;
+         * any processing of this parameter is performed by the JWT application. If present,
+         * it is RECOMMENDED that its value be JWT to indicate that this object is a JWT. While media
+         * type names are not case-sensitive, it is RECOMMENDED that JWT always be spelled using uppercase characters
+         * for compatibility with legacy implementations. Use of this Header Parameter is OPTIONAL.
+         * @param typ the type
+         */
         public Builder type(String typ) {
             checkNotNull(typ);
             checkArgument(isNotBlank(typ));

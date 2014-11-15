@@ -47,7 +47,7 @@ public class JwtAuthApplication extends Application<MyConfiguration> {
                     throw new AuthenticationException(e.getMessage(), e);
                 }
 
-                if ("good-guy".equals(token.claim().getParameter("principal"))) {
+                if ("good-guy".equals(token.claim().subject())) {
                     return Optional.of(new User("good-guy"));
                 }
 

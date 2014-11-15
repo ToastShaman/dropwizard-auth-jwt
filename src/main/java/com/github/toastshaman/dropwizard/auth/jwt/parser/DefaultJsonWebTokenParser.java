@@ -13,21 +13,25 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
+/**
+ * A parser that can be used to construct {@code JsonWebToken}'s from
+ * it's serialized form.
+ */
 public class DefaultJsonWebTokenParser implements JsonWebTokenParser {
 
     @Override
     public JsonWebToken parse(String token) {
         checkArgument(isNotBlank(token));
 
-        List<String> pieces = Splitter.on(".").omitEmptyStrings().trimResults().splitToList(token);
+        final List<String> pieces = Splitter.on(".").omitEmptyStrings().trimResults().splitToList(token);
 
         if (pieces.size() != 3) {
             throw new MalformedJsonWebTokenException(format("The supplied token is malformed: [%s]", token));
         }
 
-        String jwtHeader = fromBase64ToString(pieces.get(0));
-        String jwtClaim = fromBase64ToString(pieces.get(1));
-        byte[] jwtSignature = fromBase64(pieces.get(2));
+        final String jwtHeader = fromBase64ToString(pieces.get(0));
+        final String jwtClaim = fromBase64ToString(pieces.get(1));
+        final byte[] jwtSignature = fromBase64(pieces.get(2));
 
         return JsonWebToken.parser()
                 .header(jwtHeader)

@@ -13,7 +13,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  * final HmacSHA512Signer signer = new HmacSHA512Signer(bytesOf("SECRET"));
  * final JsonWebToken token = JsonWebToken.builder()
  *     .header(JsonWebTokenHeader.HS512())
- *     .claim(JsonWebTokenClaim.builder().issuer("joe").build())
+ *     .claim(JsonWebTokenClaim.builder().subject("joe").build())
  *     .build();
  *
  * final String signedToken = signer.sign(token);
@@ -43,7 +43,7 @@ public class HmacSHA512Signer extends KeyAware implements JsonWebTokenSigner {
      */
     @Override
     public String sign(JsonWebToken token) {
-        checkArgument(token.header().alg().equals(HS512), "Can not sign a %s with a %s signer", token.header().alg(), HS512);
+        checkArgument(token.header().algorithm().equals(HS512), "Can not sign a %s with a %s signer", token.header().algorithm(), HS512);
         return hmacSigner.sign(token);
     }
 }

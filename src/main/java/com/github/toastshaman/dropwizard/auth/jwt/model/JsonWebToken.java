@@ -19,6 +19,25 @@ import static java.lang.String.format;
 import static java.util.Arrays.copyOf;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
+/**
+ * A JSON Web Token implementation.
+ *
+ * <pre>{@code
+ * &#064;GET
+ * &#064;Path("/generate-token")
+ * public Map<String, String> generate() {
+ *     final HmacSHA512Signer signer = new HmacSHA512Signer(tokenSecret);
+ *     final JsonWebToken token = JsonWebToken.builder()
+ *         .header(JsonWebTokenHeader.HS512())
+ *         .claim(JsonWebTokenClaim.builder()
+ *             .subject("joe")
+ *             .issuedAt(new DateTime())
+ *             .build())
+ *         .build();
+ *   final String signedToken = signer.sign(token);
+ *   return singletonMap("token", signedToken);
+ * }
+ */
 public class JsonWebToken {
 
     private final JsonWebTokenHeader header;
@@ -89,7 +108,6 @@ public class JsonWebToken {
             if (rawToken.isPresent()) {
                 checkArgument(rawToken.get().size() == 3);
             }
-            ;
             return new JsonWebToken(header, claim, signature, rawToken);
         }
 

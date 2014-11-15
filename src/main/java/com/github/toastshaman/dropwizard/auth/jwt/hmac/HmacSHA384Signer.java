@@ -1,10 +1,8 @@
 package com.github.toastshaman.dropwizard.auth.jwt.hmac;
 
-import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenAlgorithms;
 import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenSigner;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
 
-import static com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenAlgorithms.*;
 import static com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenAlgorithms.HS384;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
@@ -16,7 +14,7 @@ import static com.google.common.base.Preconditions.checkState;
  * final HmacSHA384Signer signer = new HmacSHA384Signer(bytesOf("SECRET"));
  * final JsonWebToken token = JsonWebToken.builder()
  *     .header(JsonWebTokenHeader.HS384())
- *     .claim(JsonWebTokenClaim.builder().issuer("joe").build())
+ *     .claim(JsonWebTokenClaim.builder().subject("joe").build())
  *     .build();
  *
  * final String signedToken = signer.sign(token);
@@ -46,7 +44,7 @@ public class HmacSHA384Signer extends KeyAware implements JsonWebTokenSigner {
      */
     @Override
     public String sign(JsonWebToken token) {
-        checkArgument(token.header().alg().equals(HS384), "Can not sign a %s with a %s signer", token.header().alg(), HS384);
+        checkArgument(token.header().algorithm().equals(HS384), "Can not sign a %s with a %s signer", token.header().algorithm(), HS384);
         return hmacSigner.sign(token);
     }
 }

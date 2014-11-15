@@ -51,7 +51,7 @@ public class HmacSHA512Verifier extends KeyAware implements JsonWebTokenVerifier
      */
     @Override
     public void verifySignature(JsonWebToken token) {
-        checkState(token.header().alg().equals(HS512));
+        checkState(token.header().algorithm().equals(HS512));
         hmacVerifier.verifySignature(token);
     }
 }

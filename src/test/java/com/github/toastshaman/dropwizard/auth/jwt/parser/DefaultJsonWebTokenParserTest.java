@@ -24,7 +24,7 @@ public class DefaultJsonWebTokenParserTest {
         assertThat(token.claim(), notNullValue());
 
         assertThat(token.header().type(), equalTo("JWT"));
-        assertThat(token.header().alg(), equalTo("HS256"));
+        assertThat(token.header().algorithm(), equalTo("HS256"));
 
         assertThat(token.claim().issuer(), equalTo("joe"));
         assertThat(token.claim().expiration(), equalTo(1300819380L));
