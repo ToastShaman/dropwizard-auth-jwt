@@ -4,6 +4,12 @@
 
 An implementation of the JSON Web Token (JWT) draft-ietf-oauth-json-web-token-20 for dropwizard 7.0.
 
+## What is it?
+JSON Web Token (JWT) is a compact URL-safe means of representing claims to be transferred between two parties.
+The claims in a JWT are encoded as a JSON object that is digitally signed using JSON Web Signature (JWS).
+
+Check out http://jwt.io/
+
 ## Getting Started
 
 To use this library in your project you can download it from Maven Central.
