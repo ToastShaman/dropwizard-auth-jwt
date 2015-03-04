@@ -56,6 +56,7 @@ public class JsonWebTokenClaim {
             Long exp,
             Long nbf,
             Map<String, Object> params) {
+        this.sub = sub;
         this.iss = iss;
         this.exp = exp;
         this.iat = iat;
