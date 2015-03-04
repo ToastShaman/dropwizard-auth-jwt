@@ -32,7 +32,7 @@ public abstract class KeyAware {
     }
 
     private void initialiseKey(byte[] key) {
-        this.signingKey = new SecretKeySpec(secret, algorithm);
+        this.signingKey = new SecretKeySpec(key, algorithm);
         try {
             this.hmac = Mac.getInstance(algorithm);
         } catch (NoSuchAlgorithmException e) {
