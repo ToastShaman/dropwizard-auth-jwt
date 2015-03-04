@@ -17,10 +17,6 @@ public abstract class KeyAware {
 
     private final String algorithm;
 
-    protected SecretKeySpec signingKey;
-
-    protected Mac hmac;
-
     /* package */ KeyAware(byte[] secret, String algorithm) {
         checkNotNull(secret);
         checkNotNull(algorithm);
@@ -28,20 +24,15 @@ public abstract class KeyAware {
 
         this.algorithm = algorithm;
         this.secret = secret;
-        initialiseKey(secret);
     }
 
-    private void initialiseKey(byte[] key) {
-        this.signingKey = new SecretKeySpec(key, algorithm);
+    protected Mac initialiseMac() {
+        final SecretKeySpec signingKey = new SecretKeySpec(secret, algorithm);
         try {
-            this.hmac = Mac.getInstance(algorithm);
-        } catch (NoSuchAlgorithmException e) {
-            throw new JsonWebTokenException(e.getMessage(), e);
-        }
-
-        try {
+            final Mac hmac = Mac.getInstance(algorithm);
             hmac.init(signingKey);
-        } catch (InvalidKeyException e) {
+            return hmac;
+        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
             throw new JsonWebTokenException(e.getMessage(), e);
         }
     }

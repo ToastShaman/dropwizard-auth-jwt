@@ -5,7 +5,6 @@ import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
 
 import static com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenAlgorithms.HS384;
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkState;
 
 /**
  * This class can be used to sign a newly created bearer token with a HMAC (SHA-384).
@@ -24,11 +23,8 @@ public class HmacSHA384Signer extends KeyAware implements JsonWebTokenSigner {
 
     private static final String HMAC_SHA384_ALG = "HmacSHA384";
 
-    private final HmacSigner hmacSigner;
-
     public HmacSHA384Signer(byte[] secret) {
         super(secret, HMAC_SHA384_ALG);
-        hmacSigner = new HmacSigner(hmac);
     }
 
     /**
@@ -45,6 +41,6 @@ public class HmacSHA384Signer extends KeyAware implements JsonWebTokenSigner {
     @Override
     public String sign(JsonWebToken token) {
         checkArgument(token.header().algorithm().equals(HS384), "Can not sign a %s with a %s signer", token.header().algorithm(), HS384);
-        return hmacSigner.sign(token);
+        return new HmacSigner(initialiseMac()).sign(token);
     }
 }

@@ -23,15 +23,12 @@ public class HmacSHA256Signer extends KeyAware implements JsonWebTokenSigner {
 
     private static final String HMAC_SHA256_ALG = "HmacSHA256";
 
-    private final HmacSigner hmacSigner;
-
     /**
      * Constructs a signer that signs a previously created token.
      * @param secret the secret that will be used to sign the bearer token
      */
     public HmacSHA256Signer(byte[] secret) {
         super(secret, HMAC_SHA256_ALG);
-        hmacSigner = new HmacSigner(hmac);
     }
 
     /**
@@ -48,6 +45,6 @@ public class HmacSHA256Signer extends KeyAware implements JsonWebTokenSigner {
     @Override
     public String sign(JsonWebToken token) {
         checkArgument(token.header().algorithm().equals(HS256), "Can not sign a %s with a %s signer", token.header().algorithm(), HS256);
-        return hmacSigner.sign(token);
+        return new HmacSigner(initialiseMac()).sign(token);
     }
 }
