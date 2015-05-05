@@ -3,9 +3,7 @@ package com.github.toastshaman.dropwizard.auth.jwt.parser;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
 import org.junit.Test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DefaultJsonWebTokenParserTest {
 
@@ -20,14 +18,14 @@ public class DefaultJsonWebTokenParserTest {
 
         JsonWebToken token = new DefaultJsonWebTokenParser().parse(encodedToken);
 
-        assertThat(token.header(), notNullValue());
-        assertThat(token.claim(), notNullValue());
+        assertThat(token.header()).isNotNull();
+        assertThat(token.claim()).isNotNull();
 
-        assertThat(token.header().type(), equalTo("JWT"));
-        assertThat(token.header().algorithm(), equalTo("HS256"));
+        assertThat(token.header().type()).isEqualTo("JWT");
+        assertThat(token.header().algorithm()).isEqualTo("HS256");
 
-        assertThat(token.claim().issuer(), equalTo("joe"));
-        assertThat(token.claim().expiration(), equalTo(1300819380L));
-        assertThat((Boolean) token.claim().getParameter("http://example.com/is_root"), equalTo(true));
+        assertThat(token.claim().issuer()).isEqualTo("joe");
+        assertThat(token.claim().expiration()).isEqualTo(1300819380L);
+        assertThat((Boolean) token.claim().getParameter("http://example.com/is_root")).isEqualTo(true);
     }
 }

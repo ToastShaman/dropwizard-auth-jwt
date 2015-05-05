@@ -13,7 +13,7 @@ import static com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion.
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMap;
-import static org.apache.commons.lang.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * A JSON representation of a JWT claim.

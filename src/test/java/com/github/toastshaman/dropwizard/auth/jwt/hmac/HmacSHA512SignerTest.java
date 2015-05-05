@@ -7,8 +7,7 @@ import com.google.common.base.Splitter;
 import org.junit.Test;
 
 import static com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenUtils.bytesOf;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class HmacSHA512SignerTest {
 
@@ -24,6 +23,6 @@ public class HmacSHA512SignerTest {
 
         final String hmac = Splitter.on(".").splitToList(signedToken).get(2);
 
-        assertThat(hmac, equalTo("bMndBygjDjxbLzWF672Qa1SYU3973uSWxqyyW0epnE_zviu8VZ5tKt9u3USWAsDeUJ6gx3TceRF9t_FRFg2j5w"));
+        assertThat(hmac).isEqualTo("bMndBygjDjxbLzWF672Qa1SYU3973uSWxqyyW0epnE_zviu8VZ5tKt9u3USWAsDeUJ6gx3TceRF9t_FRFg2j5w");
     }
 }

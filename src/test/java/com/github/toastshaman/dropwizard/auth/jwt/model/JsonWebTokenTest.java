@@ -5,8 +5,7 @@ import org.joda.time.DateTime;
 import org.junit.Test;
 
 import static com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenUtils.fromBase64;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class JsonWebTokenTest {
 
@@ -32,7 +31,7 @@ public class JsonWebTokenTest {
 
         final String encodedToken = new HmacSHA256Signer(key).sign(token);
 
-        assertThat(encodedToken, equalTo(expected));
+        assertThat(encodedToken).isEqualTo(expected);
     }
 
     @Test
@@ -59,6 +58,6 @@ public class JsonWebTokenTest {
 
         final String encodedToken = new HmacSHA256Signer(key).sign(token);
 
-        assertThat(encodedToken, equalTo(expected));
+        assertThat(encodedToken).isEqualTo(expected);
     }
 }

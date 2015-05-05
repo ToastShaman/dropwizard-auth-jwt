@@ -11,7 +11,7 @@ import static com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenAlgorithms.
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMap;
-import static org.apache.commons.lang.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * JSON representation of the token header.

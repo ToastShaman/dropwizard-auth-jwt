@@ -18,7 +18,7 @@ To use this library in your project you can download it from Maven Central.
 <dependency>
     <groupId>com.github.toastshaman</groupId>
     <artifactId>dropwizard-auth-jwt</artifactId>
-    <version>0.7.1-1</version>
+    <version>0.8.1-0</version>
 </dependency>
 ```
 
