@@ -11,7 +11,7 @@ import static com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenUtils.fromB
 import static com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenUtils.fromBase64ToString;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
-import static org.apache.commons.lang.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * A parser that can be used to construct {@code JsonWebToken}'s from
