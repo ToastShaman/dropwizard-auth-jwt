@@ -2,7 +2,7 @@
 
 # dropwizard-auth-jwt
 
-An implementation of the JSON Web Token (JWT) draft-ietf-oauth-json-web-token-20 for dropwizard 7.0.
+An implementation of the JSON Web Token (JWT) draft-ietf-oauth-json-web-token-20 for Dropwizard 7 and 8.
 
 ## What is it?
 JSON Web Token (JWT) is a compact URL-safe means of representing claims to be transferred between two parties.
@@ -13,6 +13,18 @@ Check out http://jwt.io/
 ## Getting Started
 
 To use this library in your project you can download it from Maven Central.
+
+For Dropwizard 0.7.1 use:
+
+```xml
+<dependency>
+    <groupId>com.github.toastshaman</groupId>
+    <artifactId>dropwizard-auth-jwt</artifactId>
+    <version>0.7.1-1</version>
+</dependency>
+```
+
+For Dropwizard 0.8.1 use:
 
 ```xml
 <dependency>
