@@ -29,3 +29,6 @@ if you want to use this code your dropwizard application.
 ## License
 Apache License Version 2.0 
 http://apache.org/licenses/LICENSE-2.0.txt
+
+## Thanks To
+A special thanks goes to @MartinSahlen for providing a Gist with the Dropwizard 8 implementation of the AuthFactory.
