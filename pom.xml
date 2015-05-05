@@ -6,7 +6,7 @@
 
     <groupId>com.github.toastshaman</groupId>
     <artifactId>dropwizard-auth-jwt</artifactId>
-    <version>0.7.1-1</version>
+    <version>0.8.0</version>
     <name>dropwizard-auth-jwt</name>
     <description>
         An implementation of the JSON Web Token (JWT) draft-ietf-oauth-json-web-token-20 for Dropwizard.
@@ -16,7 +16,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <dropwizard.version>0.7.1</dropwizard.version>
+        <dropwizard.version>0.8.1</dropwizard.version>
         <jersey.version>1.18.1</jersey.version>
     </properties>
 
@@ -140,6 +140,7 @@
                     </execution>
                 </executions>
             </plugin>
+            <!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
@@ -154,6 +155,7 @@
                     </execution>
                 </executions>
             </plugin>
+            -->
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
