@@ -7,8 +7,8 @@ import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebTokenClaim;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebTokenHeader;
 import com.github.toastshaman.dropwizard.auth.jwt.parser.DefaultJsonWebTokenParser;
+import com.github.toastshaman.dropwizard.auth.jwt.validator.ExpiryValidator;
 import com.google.common.base.Optional;
-import io.dropwizard.auth.Auth;
 import io.dropwizard.auth.AuthFactory;
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
@@ -21,14 +21,11 @@ import org.glassfish.jersey.test.ServletDeploymentContext;
 import org.glassfish.jersey.test.grizzly.GrizzlyWebTestContainerFactory;
 import org.glassfish.jersey.test.spi.TestContainerException;
 import org.glassfish.jersey.test.spi.TestContainerFactory;
+import org.joda.time.DateTime;
 import org.junit.Test;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
 
 import static com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenUtils.bytesOf;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -95,7 +92,7 @@ public class JWTAuthFactoryTest extends JerseyTest {
     }
 
     @Test
-    public void respondsToInvalidSignaturesWith500() throws Exception {
+    public void respondsToInvalidSignaturesWith401() throws Exception {
         try {
             final byte[] TOKEN_SECRET_KEY = bytesOf("DIFFERENT_KEY");
             final HmacSHA512Signer signer = new HmacSHA512Signer(TOKEN_SECRET_KEY);
@@ -110,7 +107,29 @@ public class JWTAuthFactoryTest extends JerseyTest {
 
             failBecauseExceptionWasNotThrown(WebApplicationException.class);
         } catch (WebApplicationException e) {
-            assertThat(e.getResponse().getStatus()).isEqualTo(500);
+            assertThat(e.getResponse().getStatus()).isEqualTo(401);
+        }
+    }
+
+    @Test
+    public void respondsToExpiredTokensWith401() throws Exception {
+        try {
+            final byte[] TOKEN_SECRET_KEY = bytesOf("MySecretKey");
+            final HmacSHA512Signer signer = new HmacSHA512Signer(TOKEN_SECRET_KEY);
+            final JsonWebToken token = JsonWebToken.builder()
+                    .header(JsonWebTokenHeader.HS512())
+                    .claim(JsonWebTokenClaim.builder()
+                            .expiration(DateTime.now().minusDays(1))
+                            .param("principal", "good-guy").build())
+                    .build();
+            final String signedToken = signer.sign(token);
+
+            target("/test").request()
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + signedToken)
+                    .get(String.class);
+            failBecauseExceptionWasNotThrown(WebApplicationException.class);
+        } catch (WebApplicationException e) {
+            assertThat(e.getResponse().getStatus()).isEqualTo(401);
         }
     }
 
@@ -133,15 +152,6 @@ public class JWTAuthFactoryTest extends JerseyTest {
         }
     }
 
-    @Path("/test/")
-    @Produces(MediaType.TEXT_PLAIN)
-    public static class ExampleResource {
-        @GET
-        public String show(@Auth String principal) {
-            return principal;
-        }
-    }
-
     public static class JwtAuthTestResourceConfig extends DropwizardResourceConfig {
         public JwtAuthTestResourceConfig() {
             super(true, new MetricRegistry());
@@ -149,6 +159,10 @@ public class JWTAuthFactoryTest extends JerseyTest {
             final Authenticator<JsonWebToken, String> authenticator = new Authenticator<JsonWebToken, String>() {
                 @Override
                 public Optional<String> authenticate(JsonWebToken credentials) throws AuthenticationException {
+
+                    final ExpiryValidator validator = new ExpiryValidator();
+                    validator.validate(credentials);
+
                     if ("good-guy".equals(credentials.claim().getParameter("principal"))) {
                         return Optional.of("good-guy");
                     }

@@ -12,6 +12,7 @@ public interface JsonWebTokenValidator {
     /**
      * Validates claims attached to the bearer token such as expiry time etc.
      * Throws a runtime exception in case of the token being invalid.
+     * @throws com.github.toastshaman.dropwizard.auth.jwt.exceptions.JsonWebTokenException
      * @param token the token to verify
      */
     void validate(JsonWebToken token);

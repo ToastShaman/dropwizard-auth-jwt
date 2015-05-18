@@ -1,5 +1,6 @@
 package com.github.toastshaman.dropwizard.auth.jwt;
 
+import com.github.toastshaman.dropwizard.auth.jwt.exceptions.JsonWebTokenException;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
 import com.google.common.base.Optional;
 import io.dropwizard.auth.*;
@@ -84,7 +85,6 @@ public class JWTAuthFactory<T> extends AuthFactory<JsonWebToken, T> {
     public T provide() {
         if (request != null) {
             final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-
             try {
                 if (header != null) {
                     final int space = header.indexOf(' ');
@@ -92,26 +92,19 @@ public class JWTAuthFactory<T> extends AuthFactory<JsonWebToken, T> {
                         final String method = header.substring(0, space);
                         if (prefix.equalsIgnoreCase(method)) {
                             final String rawToken = header.substring(space + 1);
+                            final JsonWebToken token = tokenParser.parse(rawToken);
 
-                            JsonWebToken token;
-
-                            try {
-                                token = tokenParser.parse(rawToken);
-                                tokenVerifier.verifySignature(token);
-                            } catch (Exception e) {
-                                throw new AuthenticationException(e.getMessage(), e);
-                            }
+                            tokenVerifier.verifySignature(token);
 
                             final Optional<T> result = authenticator().authenticate(token);
-
                             if (result.isPresent()) {
                                 return result.get();
                             }
                         }
                     }
                 }
-            } catch (IllegalArgumentException e) {
-                LOGGER.warn("Error decoding credentials", e);
+            } catch (JsonWebTokenException e) {
+                LOGGER.warn("Error decoding credentials: " + e.getMessage(), e);
             } catch (AuthenticationException e) {
                 LOGGER.warn("Error authenticating credentials", e);
                 throw new InternalServerErrorException();

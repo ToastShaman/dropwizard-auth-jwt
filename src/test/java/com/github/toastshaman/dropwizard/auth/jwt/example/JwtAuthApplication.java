@@ -3,7 +3,6 @@ package com.github.toastshaman.dropwizard.auth.jwt.example;
 import com.github.toastshaman.dropwizard.auth.jwt.JWTAuthFactory;
 import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenParser;
 import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenValidator;
-import com.github.toastshaman.dropwizard.auth.jwt.exceptions.TokenExpiredException;
 import com.github.toastshaman.dropwizard.auth.jwt.hmac.HmacSHA512Verifier;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
 import com.github.toastshaman.dropwizard.auth.jwt.parser.DefaultJsonWebTokenParser;
@@ -11,7 +10,6 @@ import com.github.toastshaman.dropwizard.auth.jwt.validator.ExpiryValidator;
 import com.google.common.base.Optional;
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthFactory;
-import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -38,7 +36,7 @@ public class JwtAuthApplication extends Application<MyConfiguration> {
 
     private static class ExampleAuthenticator implements Authenticator<JsonWebToken, User> {
         @Override
-        public Optional<User> authenticate(JsonWebToken token) throws AuthenticationException {
+        public Optional<User> authenticate(JsonWebToken token) {
             final JsonWebTokenValidator expiryValidator = new ExpiryValidator();
 
             // Provide your own implementation to lookup users based on the principal attribute in the
@@ -47,11 +45,10 @@ public class JwtAuthApplication extends Application<MyConfiguration> {
 
             // In case you want to verify different parts of the token you can do that here.
             // E.g.: Verifying that the provided token has not expired.
-            try {
-                expiryValidator.validate(token);
-            } catch (TokenExpiredException e) {
-                throw new AuthenticationException(e.getMessage(), e);
-            }
+
+            // All JsonWebTokenExceptions will result in a 401 Unauthorized response.
+
+            expiryValidator.validate(token);
 
             if ("good-guy".equals(token.claim().subject())) {
                 return Optional.of(new User("good-guy"));
