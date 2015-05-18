@@ -6,7 +6,7 @@
 
     <groupId>com.github.toastshaman</groupId>
     <artifactId>dropwizard-auth-jwt</artifactId>
-    <version>0.8.1-1-SNAPSHOT</version>
+    <version>0.8.1-1</version>
     <name>dropwizard-auth-jwt</name>
     <description>
         An implementation of the JSON Web Token (JWT) draft-ietf-oauth-json-web-token-20 for Dropwizard.
