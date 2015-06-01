@@ -32,7 +32,7 @@ public class SecuredResource {
         final JsonWebToken token = JsonWebToken.builder()
                 .header(JsonWebTokenHeader.HS512())
                 .claim(JsonWebTokenClaim.builder()
-                        .param("principal", "good-guy")
+                        .subject("good-guy")
                         .issuedAt(new DateTime().plusHours(1))
                         .build())
                 .build();
