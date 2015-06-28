@@ -24,20 +24,20 @@ public class ExpiryValidator implements JsonWebTokenValidator {
     @Override
     public void validate(JsonWebToken token) {
         if (token.claim() != null) {
-            Instant issuedAt = fromNullable(toInstant(token.claim().issuedAt())).or(now());
-            Instant expiration = fromNullable(toInstant(token.claim().expiration())).or(new Instant(Long.MAX_VALUE));
-            Instant notBefore = fromNullable(toInstant(token.claim().notBefore())).or(now());
+            final Instant now = new Instant();
+            final Instant issuedAt = fromNullable(toInstant(token.claim().issuedAt())).or(now);
+            final Instant expiration = fromNullable(toInstant(token.claim().expiration())).or(new Instant(Long.MAX_VALUE));
+            final Instant notBefore = fromNullable(toInstant(token.claim().notBefore())).or(now);
 
-            if (issuedAt.isAfter(expiration) || notBefore.isAfterNow() || !inInterval(issuedAt, expiration)) {
+            if (issuedAt.isAfter(expiration) || notBefore.isAfterNow() || !inInterval(issuedAt, expiration, now)) {
                 throw new TokenExpiredException();
             }
         }
     }
 
-    private boolean inInterval(Instant start, Instant end) {
-        Interval interval = new Interval(start, end);
-        Instant now = now();
-        Interval currentTimeWithSkew = new Interval(now.minus(acceptableClockSkew), now.plus(acceptableClockSkew));
+    private boolean inInterval(Instant start, Instant end, Instant now) {
+        final Interval interval = new Interval(start, end);
+        final Interval currentTimeWithSkew = new Interval(now.minus(acceptableClockSkew), now.plus(acceptableClockSkew));
         return interval.overlaps(currentTimeWithSkew);
     }
 
@@ -46,9 +46,5 @@ public class ExpiryValidator implements JsonWebTokenValidator {
             return null;
         }
         return new Instant(input * 1000);
-    }
-
-    private Instant now() {
-        return new Instant();
     }
 }
