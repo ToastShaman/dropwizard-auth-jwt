@@ -1,6 +1,6 @@
 package com.github.toastshaman.dropwizard.auth.jwt.example;
 
-import com.github.toastshaman.dropwizard.auth.jwt.JWTAuthFactory;
+import com.github.toastshaman.dropwizard.auth.jwt.JWTAuthFilter;
 import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenParser;
 import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenValidator;
 import com.github.toastshaman.dropwizard.auth.jwt.hmac.HmacSHA512Verifier;
@@ -9,10 +9,14 @@ import com.github.toastshaman.dropwizard.auth.jwt.parser.DefaultJsonWebTokenPars
 import com.github.toastshaman.dropwizard.auth.jwt.validator.ExpiryValidator;
 import com.google.common.base.Optional;
 import io.dropwizard.Application;
-import io.dropwizard.auth.AuthFactory;
+import io.dropwizard.auth.AuthDynamicFeature;
+import io.dropwizard.auth.AuthValueFactoryProvider;
 import io.dropwizard.auth.Authenticator;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
+
+import java.security.Principal;
 
 /**
  * A sample dropwizard application that shows how to set up the JWT Authentication provider.
@@ -30,13 +34,22 @@ public class JwtAuthApplication extends Application<MyConfiguration> {
     public void run(MyConfiguration configuration, Environment environment) throws Exception {
         final JsonWebTokenParser tokenParser = new DefaultJsonWebTokenParser();
         final HmacSHA512Verifier tokenVerifier = new HmacSHA512Verifier(configuration.getJwtTokenSecret());
-        environment.jersey().register(AuthFactory.binder(new JWTAuthFactory<>(new ExampleAuthenticator(), "realm", User.class, tokenVerifier, tokenParser)));
+        environment.jersey().register(new AuthDynamicFeature(
+                new JWTAuthFilter.Builder<>()
+                        .setTokenParser(tokenParser)
+                        .setTokenVerifier(tokenVerifier)
+                        .setRealm("realm")
+                        .setPrefix("Bearer")
+                        .setAuthenticator(new JwtAuthApplication.ExampleAuthenticator())
+                        .buildAuthFilter()));
+        environment.jersey().register(new AuthValueFactoryProvider.Binder<>(Principal.class));
+        environment.jersey().register(RolesAllowedDynamicFeature.class);
         environment.jersey().register(new SecuredResource(configuration.getJwtTokenSecret()));
     }
 
-    private static class ExampleAuthenticator implements Authenticator<JsonWebToken, User> {
+    private static class ExampleAuthenticator implements Authenticator<JsonWebToken, Principal> {
         @Override
-        public Optional<User> authenticate(JsonWebToken token) {
+        public Optional<Principal> authenticate(JsonWebToken token) {
             final JsonWebTokenValidator expiryValidator = new ExpiryValidator();
 
             // Provide your own implementation to lookup users based on the principal attribute in the
@@ -51,7 +64,13 @@ public class JwtAuthApplication extends Application<MyConfiguration> {
             expiryValidator.validate(token);
 
             if ("good-guy".equals(token.claim().subject())) {
-                return Optional.of(new User("good-guy"));
+                final Principal principal = new Principal() {
+                    @Override
+                    public String getName() {
+                        return "good-guy";
+                    }
+                };
+                return Optional.of(principal);
             }
 
             return Optional.absent();
@@ -59,7 +78,6 @@ public class JwtAuthApplication extends Application<MyConfiguration> {
     }
 
     public static void main(String[] args) throws Exception {
-        // new JwtAuthApplication().run(args);
         new JwtAuthApplication().run(new String[]{"server"});
     }
 }
