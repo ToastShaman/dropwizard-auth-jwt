@@ -25,6 +25,7 @@ public abstract class AuthBaseTest<T extends DropwizardResourceConfig> extends J
     protected static final String ORDINARY_USER = "ordinary-guy";
     protected static final String BADGUY_USER = "bad-guy";
     protected static final String BEARER_PREFIX = "Bearer";
+    protected static final String COOKIE_NAME = "jwt-token";
 
     static {
         BootstrapLogging.bootstrap();
@@ -133,6 +134,14 @@ public abstract class AuthBaseTest<T extends DropwizardResourceConfig> extends J
     public void transformsCredentialsToPrincipals() throws Exception {
         assertThat(target("/test/admin").request()
                 .header(HttpHeaders.AUTHORIZATION, getPrefix() + " " + getGoodGuyValidToken())
+                .get(String.class))
+                .isEqualTo("'" + ADMIN_USER + "' has admin privileges");
+    }
+
+    @Test
+    public void transformsCredentialsToPrincipalsWithCookie() throws Exception {
+        assertThat(target("/test/admin").request()
+                .cookie(COOKIE_NAME, getGoodGuyValidToken())
                 .get(String.class))
                 .isEqualTo("'" + ADMIN_USER + "' has admin privileges");
     }

@@ -26,6 +26,7 @@ public class JWTAuthProviderTest extends AuthBaseTest<JWTAuthProviderTest.JWTAut
     public static class JWTAuthTestResourceConfig extends AuthBaseResourceConfig {
         protected ContainerRequestFilter getAuthFilter() {
             return new JWTAuthFilter.Builder<>()
+                    .setCookieName(COOKIE_NAME)
                     .setTokenParser(new DefaultJsonWebTokenParser())
                     .setTokenVerifier(new HmacSHA512Verifier(SECRET_KEY))
                     .setPrefix(BEARER_PREFIX)
