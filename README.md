@@ -14,13 +14,12 @@ Check out http://jwt.io/
 
 To use this library in your project you can download it from Maven Central.
 
-For Dropwizard 0.7.1 use:
-
+For Dropwizard 0.9.1 use:
 ```xml
 <dependency>
     <groupId>com.github.toastshaman</groupId>
     <artifactId>dropwizard-auth-jwt</artifactId>
-    <version>0.7.1-1</version>
+    <version>0.9.1-1</version>
 </dependency>
 ```
 
@@ -31,6 +30,16 @@ For Dropwizard 0.8.1 use:
     <groupId>com.github.toastshaman</groupId>
     <artifactId>dropwizard-auth-jwt</artifactId>
     <version>0.8.1-1</version>
+</dependency>
+```
+
+For Dropwizard 0.7.1 use:
+
+```xml
+<dependency>
+    <groupId>com.github.toastshaman</groupId>
+    <artifactId>dropwizard-auth-jwt</artifactId>
+    <version>0.7.1-1</version>
 </dependency>
 ```
 
