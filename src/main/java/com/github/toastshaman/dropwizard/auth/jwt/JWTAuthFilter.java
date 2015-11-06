@@ -40,11 +40,11 @@ public class JWTAuthFilter<P extends Principal> extends AuthFilter<JsonWebToken,
 
     @Override
     public void filter(final ContainerRequestContext requestContext) throws IOException {
-        Optional<String> optionalToken = getTokenFromCookieOrHeader(requestContext);
+        final Optional<String> optionalToken = getTokenFromCookieOrHeader(requestContext);
 
         if (optionalToken.isPresent()) {
             try {
-                final JsonWebToken token = verifiedToken(optionalToken);
+                final JsonWebToken token = verifyToken(optionalToken.get());
                 final Optional<P> principal = authenticator.authenticate(token);
 
                 if (principal.isPresent()) {
@@ -86,39 +86,31 @@ public class JWTAuthFilter<P extends Principal> extends AuthFilter<JsonWebToken,
         throw new WebApplicationException(unauthorizedHandler.buildResponse(prefix, realm));
     }
 
-    private JsonWebToken verifiedToken(Optional<String> optionalToken) {
-        final String rawToken = optionalToken.get();
+    private JsonWebToken verifyToken(String rawToken) {
         final JsonWebToken token = tokenParser.parse(rawToken);
         tokenVerifier.verifySignature(token);
         return token;
     }
 
     public Optional<String> getTokenFromCookieOrHeader(ContainerRequestContext requestContext) {
-        Optional<String> headerToken = getTokenFromHeader(requestContext.getHeaders());
+        final Optional<String> headerToken = getTokenFromHeader(requestContext.getHeaders());
 
         if (headerToken.isPresent()) {
             return headerToken;
         }
-        else {
-            Optional<String> cookieToken = getTokenFromCookie(requestContext);
 
-            if (cookieToken.isPresent()) {
-                return cookieToken;
-            }
-            else {
-                return Optional.absent();
-            }
-        }
+        final Optional<String> cookieToken = getTokenFromCookie(requestContext);
+        return cookieToken.isPresent() ? cookieToken : Optional.<String>absent();
     }
 
     private Optional<String> getTokenFromHeader(MultivaluedMap<String, String> headers) {
-        String header = headers.getFirst(HttpHeaders.AUTHORIZATION);
+        final String header = headers.getFirst(HttpHeaders.AUTHORIZATION);
         if (header != null) {
             int space = header.indexOf(' ');
             if (space > 0) {
-                String method = header.substring(0, space);
+                final String method = header.substring(0, space);
                 if (prefix.equalsIgnoreCase(method)) {
-                    String rawToken = header.substring(space + 1);
+                    final String rawToken = header.substring(space + 1);
                     return Optional.of(rawToken);
                 }
             }
@@ -128,12 +120,11 @@ public class JWTAuthFilter<P extends Principal> extends AuthFilter<JsonWebToken,
     }
 
     public Optional<String> getTokenFromCookie(ContainerRequestContext requestContext) {
-        Map<String, Cookie> cookies = requestContext.getCookies();
+        final Map<String, Cookie> cookies = requestContext.getCookies();
 
         if (cookieName != null && cookies.containsKey(cookieName)) {
-            Cookie tokenCookie = cookies.get(cookieName);
-            String rawToken = tokenCookie.getValue();
-
+            final Cookie tokenCookie = cookies.get(cookieName);
+            final String rawToken = tokenCookie.getValue();
             return Optional.of(rawToken);
         }
 
@@ -174,5 +165,4 @@ public class JWTAuthFilter<P extends Principal> extends AuthFilter<JsonWebToken,
             return new JWTAuthFilter<>(parser, verifier, cookieName);
         }
     }
-
 }
