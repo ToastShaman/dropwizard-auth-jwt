@@ -19,7 +19,7 @@ For Dropwizard 0.9.1 use:
 <dependency>
     <groupId>com.github.toastshaman</groupId>
     <artifactId>dropwizard-auth-jwt</artifactId>
-    <version>0.9.1-1</version>
+    <version>0.9.1-0</version>
 </dependency>
 ```
 
