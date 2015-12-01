@@ -6,10 +6,13 @@ import com.github.toastshaman.dropwizard.auth.jwt.exceptions.MalformedJsonWebTok
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.List;
+import java.util.*;
 
 import static com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenUtils.bytesOf;
 import static com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenUtils.toBase64;
@@ -21,7 +24,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * A JSON Web Token implementation.
- *
+ * <p/>
  * <pre>{@code
  * &#064;GET
  * &#064;Path("/generate-token")
@@ -178,5 +181,33 @@ public class JsonWebToken {
 
     public static EncoderBuilder builder() {
         return new EncoderBuilder();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof JsonWebToken)) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        JsonWebToken other = (JsonWebToken) obj;
+        if (!rawToken.isPresent() || !other.getRawToken().isPresent()) {
+            return false;
+        }
+        String ownRawToken = StringUtils.join(rawToken.get(), '.');
+        String otherRawToken = StringUtils.join(other.getRawToken().get(), '.');
+        return new EqualsBuilder().append(ownRawToken, otherRawToken).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        if (rawToken.isPresent()) {
+            String ownRawToken = StringUtils.join(rawToken.get(), '.');
+            return new HashCodeBuilder(11, 73).append(ownRawToken).toHashCode();
+        } else {
+            return super.hashCode();
+        }
+
     }
 }
