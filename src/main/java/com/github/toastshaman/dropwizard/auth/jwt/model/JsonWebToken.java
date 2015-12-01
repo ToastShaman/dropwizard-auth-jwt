@@ -24,7 +24,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * A JSON Web Token implementation.
- * <p/>
+ *
  * <pre>{@code
  * &#064;GET
  * &#064;Path("/generate-token")
