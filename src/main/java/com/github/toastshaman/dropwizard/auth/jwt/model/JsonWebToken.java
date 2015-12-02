@@ -101,7 +101,7 @@ public class JsonWebToken {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
+        return new HashCodeBuilder(11, 71)
             .append(header)
             .append(claim)
             .append(signature)
