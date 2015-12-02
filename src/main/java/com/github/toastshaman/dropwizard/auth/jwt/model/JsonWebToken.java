@@ -9,7 +9,6 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.util.List;
 
 import static com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenUtils.bytesOf;
@@ -75,10 +74,7 @@ public class JsonWebToken {
 
     private String toJson(Object input) {
         try {
-            ObjectMapper mapper = new ObjectMapper();
-            StringWriter output = new StringWriter();
-            mapper.writeValue(output, input);
-            return output.toString();
+            return new ObjectMapper().writeValueAsString(input);
         } catch (IOException e) {
             throw new JsonWebTokenException(e.getMessage(), e);
         }

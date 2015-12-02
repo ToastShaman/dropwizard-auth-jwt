@@ -26,13 +26,13 @@ public class JWTAuthProviderTest extends AuthBaseTest<JWTAuthProviderTest.JWTAut
     public static class JWTAuthTestResourceConfig extends AuthBaseResourceConfig {
         protected ContainerRequestFilter getAuthFilter() {
             return new JWTAuthFilter.Builder<>()
-                    .setCookieName(COOKIE_NAME)
-                    .setTokenParser(new DefaultJsonWebTokenParser())
-                    .setTokenVerifier(new HmacSHA512Verifier(SECRET_KEY))
-                    .setPrefix(BEARER_PREFIX)
-                    .setAuthorizer(AuthUtil.getTestAuthorizer(ADMIN_USER, ADMIN_ROLE))
-                    .setAuthenticator(AuthUtil.getJWTAuthenticator(ImmutableList.of(ADMIN_USER, ORDINARY_USER)))
-                    .buildAuthFilter();
+                .setCookieName(COOKIE_NAME)
+                .setTokenParser(new DefaultJsonWebTokenParser())
+                .setTokenVerifier(new HmacSHA512Verifier(SECRET_KEY))
+                .setPrefix(BEARER_PREFIX)
+                .setAuthorizer(AuthUtil.getTestAuthorizer(ADMIN_USER, ADMIN_ROLE))
+                .setAuthenticator(AuthUtil.getJWTAuthenticator(ImmutableList.of(ADMIN_USER, ORDINARY_USER)))
+                .buildAuthFilter();
         }
     }
 
@@ -40,13 +40,13 @@ public class JWTAuthProviderTest extends AuthBaseTest<JWTAuthProviderTest.JWTAut
     public void respondsToInvalidSignaturesWith401() throws Exception {
         try {
             target("/test/admin").request()
-                    .header(HttpHeaders.AUTHORIZATION, getPrefix() + " " + getInvalidToken())
-                    .get(String.class);
+                .header(HttpHeaders.AUTHORIZATION, getPrefix() + " " + getInvalidToken())
+                .get(String.class);
             failBecauseExceptionWasNotThrown(WebApplicationException.class);
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatus()).isEqualTo(401);
             assertThat(e.getResponse().getHeaders().get(HttpHeaders.WWW_AUTHENTICATE))
-                    .containsOnly(getPrefix() + " realm=\"realm\"");
+                .containsOnly(getPrefix() + " realm=\"realm\"");
         }
     }
 
@@ -54,13 +54,13 @@ public class JWTAuthProviderTest extends AuthBaseTest<JWTAuthProviderTest.JWTAut
     public void respondsToExpiredTokensWith401() throws Exception {
         try {
             target("/test/admin").request()
-                    .header(HttpHeaders.AUTHORIZATION, getPrefix() + " " + getOrdinaryGuyExpiredToken())
-                    .get(String.class);
+                .header(HttpHeaders.AUTHORIZATION, getPrefix() + " " + getOrdinaryGuyExpiredToken())
+                .get(String.class);
             failBecauseExceptionWasNotThrown(WebApplicationException.class);
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatus()).isEqualTo(401);
             assertThat(e.getResponse().getHeaders().get(HttpHeaders.WWW_AUTHENTICATE))
-                    .containsOnly(getPrefix() + " realm=\"realm\"");
+                .containsOnly(getPrefix() + " realm=\"realm\"");
         }
     }
 
@@ -82,46 +82,46 @@ public class JWTAuthProviderTest extends AuthBaseTest<JWTAuthProviderTest.JWTAut
     @Override
     protected String getOrdinaryGuyValidToken() {
         final JsonWebToken token = JsonWebToken.builder()
-                .header(JsonWebTokenHeader.HS512())
-                .claim(JsonWebTokenClaim.builder().subject(ORDINARY_USER).build())
-                .build();
+            .header(JsonWebTokenHeader.HS512())
+            .claim(JsonWebTokenClaim.builder().subject(ORDINARY_USER).build())
+            .build();
         return new HmacSHA512Signer(SECRET_KEY).sign(token);
     }
 
     protected String getOrdinaryGuyExpiredToken() {
         final JsonWebToken token = JsonWebToken.builder()
-                .header(JsonWebTokenHeader.HS512())
-                .claim(JsonWebTokenClaim.builder()
-                        .expiration(DateTime.now().minusDays(1))
-                        .subject(ORDINARY_USER)
-                        .build())
-                .build();
+            .header(JsonWebTokenHeader.HS512())
+            .claim(JsonWebTokenClaim.builder()
+                .expiration(DateTime.now().minusDays(1))
+                .subject(ORDINARY_USER)
+                .build())
+            .build();
         return new HmacSHA512Signer(SECRET_KEY).sign(token);
     }
 
     @Override
     protected String getGoodGuyValidToken() {
         final JsonWebToken token = JsonWebToken.builder()
-                .header(JsonWebTokenHeader.HS512())
-                .claim(JsonWebTokenClaim.builder().subject(ADMIN_USER).build())
-                .build();
+            .header(JsonWebTokenHeader.HS512())
+            .claim(JsonWebTokenClaim.builder().subject(ADMIN_USER).build())
+            .build();
         return new HmacSHA512Signer(SECRET_KEY).sign(token);
     }
 
     @Override
     protected String getBadGuyToken() {
         final JsonWebToken token = JsonWebToken.builder()
-                .header(JsonWebTokenHeader.HS512())
-                .claim(JsonWebTokenClaim.builder().subject(BADGUY_USER).build())
-                .build();
+            .header(JsonWebTokenHeader.HS512())
+            .claim(JsonWebTokenClaim.builder().subject(BADGUY_USER).build())
+            .build();
         return new HmacSHA512Signer(SECRET_KEY).sign(token);
     }
 
     protected String getInvalidToken() {
         final JsonWebToken token = JsonWebToken.builder()
-                .header(JsonWebTokenHeader.HS512())
-                .claim(JsonWebTokenClaim.builder().subject(BADGUY_USER).build())
-                .build();
+            .header(JsonWebTokenHeader.HS512())
+            .claim(JsonWebTokenClaim.builder().subject(BADGUY_USER).build())
+            .build();
         return new HmacSHA512Signer(bytesOf("DERP")).sign(token);
     }
 }

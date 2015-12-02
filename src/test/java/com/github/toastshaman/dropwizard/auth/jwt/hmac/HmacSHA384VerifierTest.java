@@ -12,11 +12,10 @@ import static com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenUtils.bytes
 public class HmacSHA384VerifierTest {
 
     @Test
-    public void
-    verifies_a_valid_signature() {
+    public void verifies_a_valid_signature() {
         final String encodedToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzM4NCJ9"
-                + ".eyJpc3MiOiJqb2UiLCJleHAiOm51bGx9"
-                + ".yS0gHKcZXzOd5rR1v9g7WMOyv-TML_eDwxY_pk2NBvivoYk3YibsRk_zL9YUauJI";
+            + ".eyJpc3MiOiJqb2UiLCJleHAiOm51bGx9"
+            + ".yS0gHKcZXzOd5rR1v9g7WMOyv-TML_eDwxY_pk2NBvivoYk3YibsRk_zL9YUauJI";
 
         final byte[] key = bytesOf("SECRET");
         final JsonWebToken token = new DefaultJsonWebTokenParser().parse(encodedToken);
@@ -25,13 +24,12 @@ public class HmacSHA384VerifierTest {
     }
 
     @Test(expected = InvalidSignatureException.class)
-    public void
-    throws_a_signature_invalid_exception_if_the_signature_does_not_match() {
+    public void throws_a_signature_invalid_exception_if_the_signature_does_not_match() {
         final HmacSHA384Signer signer = new HmacSHA384Signer(bytesOf("SECRET"));
         final JsonWebToken token = JsonWebToken.builder()
-                .header(JsonWebTokenHeader.HS384())
-                .claim(JsonWebTokenClaim.builder().issuer("joe").build())
-                .build();
+            .header(JsonWebTokenHeader.HS384())
+            .claim(JsonWebTokenClaim.builder().issuer("joe").build())
+            .build();
         final String signedToken = signer.sign(token);
         final HmacSHA384Verifier verifier = new HmacSHA384Verifier(bytesOf("DIFFERENT_KEY"));
 

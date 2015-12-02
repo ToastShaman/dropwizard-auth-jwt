@@ -34,10 +34,10 @@ public class DefaultJsonWebTokenParser implements JsonWebTokenParser {
         final byte[] jwtSignature = fromBase64(pieces.get(2));
 
         return JsonWebToken.parser()
-                .header(jwtHeader)
-                .claim(jwtClaim)
-                .signature(jwtSignature)
-                .rawToken(pieces)
-                .build();
+            .header(jwtHeader)
+            .claim(jwtClaim)
+            .signature(jwtSignature)
+            .rawToken(pieces)
+            .build();
     }
 }

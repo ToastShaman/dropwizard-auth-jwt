@@ -73,11 +73,9 @@ public class JWTAuthFilter<P extends Principal> extends AuthFilter<JsonWebToken,
                     });
                     return;
                 }
-            }
-            catch (JsonWebTokenException ex) {
+            } catch (JsonWebTokenException ex) {
                 LOGGER.warn("Error decoding credentials: " + ex.getMessage(), ex);
-            }
-            catch (AuthenticationException ex) {
+            } catch (AuthenticationException ex) {
                 LOGGER.warn("Error authenticating credentials", ex);
                 throw new InternalServerErrorException();
             }

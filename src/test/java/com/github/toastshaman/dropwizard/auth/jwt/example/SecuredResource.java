@@ -30,12 +30,12 @@ public class SecuredResource {
     public Map<String, String> generate() {
         final HmacSHA512Signer signer = new HmacSHA512Signer(tokenSecret);
         final JsonWebToken token = JsonWebToken.builder()
-                .header(JsonWebTokenHeader.HS512())
-                .claim(JsonWebTokenClaim.builder()
-                        .subject("good-guy")
-                        .issuedAt(new DateTime().plusHours(1))
-                        .build())
-                .build();
+            .header(JsonWebTokenHeader.HS512())
+            .claim(JsonWebTokenClaim.builder()
+                .subject("good-guy")
+                .issuedAt(new DateTime().plusHours(1))
+                .build())
+            .build();
         final String signedToken = signer.sign(token);
         return singletonMap("token", signedToken);
     }

@@ -8,13 +8,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DefaultJsonWebTokenParserTest {
 
     @Test
-    public void
-    parses_a_valid_JWT_token() {
+    public void parses_a_valid_JWT_token() {
 
         final String encodedToken = ""
-                + "eyJ0eXAiOiJKV1QiLA0KICJhbGciOiJIUzI1NiJ9"
-                + ".eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ"
-                + ".dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk";
+            + "eyJ0eXAiOiJKV1QiLA0KICJhbGciOiJIUzI1NiJ9"
+            + ".eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ"
+            + ".dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk";
 
         JsonWebToken token = new DefaultJsonWebTokenParser().parse(encodedToken);
 
