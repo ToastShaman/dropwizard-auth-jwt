@@ -53,3 +53,5 @@ http://apache.org/licenses/LICENSE-2.0.txt
 A special thanks goes to [MartinSahlen](https://github.com/MartinSahlen) for providing a Gist with the Dropwizard 8 implementation of the AuthFactory.
 
 A special thanks goes to [Kimble](https://github.com/kimble) for adding cookie support.
+
+A special thanks goes to [alexitooi](https://github.com/alexitooi) for adding support for the CachingAuthenticator.
