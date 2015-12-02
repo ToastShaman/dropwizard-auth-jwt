@@ -4,17 +4,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.toastshaman.dropwizard.auth.jwt.exceptions.JsonWebTokenException;
 import com.github.toastshaman.dropwizard.auth.jwt.exceptions.MalformedJsonWebTokenException;
 import com.google.common.base.Joiner;
-import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenUtils.bytesOf;
 import static com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenUtils.toBase64;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.String.format;
 import static java.util.Arrays.copyOf;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -45,15 +49,15 @@ public class JsonWebToken {
 
     private final JsonWebTokenClaim claim;
 
-    private Optional<byte[]> signature;
+    private byte[] signature;
 
-    private Optional<List<String>> rawToken = Optional.absent();
+    private List<String> rawToken;
 
-    private JsonWebToken(JsonWebTokenHeader header, JsonWebTokenClaim claim, Optional<byte[]> signature, Optional<List<String>> rawToken) {
+    private JsonWebToken(JsonWebTokenHeader header, JsonWebTokenClaim claim, byte[] signature, List<String> rawToken) {
         this.header = header;
         this.claim = claim;
         this.signature = signature;
-        this.rawToken = rawToken;
+        this.rawToken = Optional.fromNullable(rawToken).or(Lists.<String>newArrayList());
     }
 
     public JsonWebTokenHeader header() {
@@ -65,7 +69,7 @@ public class JsonWebToken {
     }
 
     public byte[] getSignature() {
-        return signature.orNull();
+        return signature;
     }
 
     public String deserialize() {
@@ -80,7 +84,7 @@ public class JsonWebToken {
         }
     }
 
-    public Optional<List<String>> getRawToken() {
+    public List<String> getRawToken() {
         return rawToken;
     }
 
@@ -89,15 +93,20 @@ public class JsonWebToken {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final JsonWebToken that = (JsonWebToken) o;
-        return Objects.equal(header, that.header) &&
-            Objects.equal(claim, that.claim) &&
-            Objects.equal(signature, that.signature) &&
-            Objects.equal(rawToken, that.rawToken);
+        return Objects.equals(header, that.header) &&
+            Objects.equals(claim, that.claim) &&
+            Arrays.equals(signature, that.signature) &&
+            Objects.equals(rawToken, that.rawToken);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(header, claim, signature, rawToken);
+        return new HashCodeBuilder()
+            .append(header)
+            .append(claim)
+            .append(signature)
+            .append(rawToken)
+            .hashCode();
     }
 
     public static class DecoderBuilder {
@@ -108,19 +117,19 @@ public class JsonWebToken {
 
         private JsonWebTokenClaim claim;
 
-        private Optional<byte[]> signature = Optional.absent();
+        private byte[] signature = null;
 
-        private Optional<List<String>> rawToken = Optional.absent();
+        private List<String> rawToken = newArrayList();
 
         public JsonWebToken build() {
             checkNotNull(header);
             checkNotNull(claim);
             checkNotNull(rawToken);
-            if (signature.isPresent()) {
-                checkArgument(signature.get().length > 0);
+            if (signature != null) {
+                checkArgument(signature.length > 0);
             }
-            if (rawToken.isPresent()) {
-                checkArgument(rawToken.get().size() == 3);
+            if (!rawToken.isEmpty()) {
+                checkArgument(rawToken.size() == 3);
             }
             return new JsonWebToken(header, claim, signature, rawToken);
         }
@@ -148,14 +157,14 @@ public class JsonWebToken {
         public DecoderBuilder signature(byte[] signature) {
             checkNotNull(signature);
             checkArgument(signature.length > 0);
-            this.signature = Optional.of(copyOf(signature, signature.length));
+            this.signature = copyOf(signature, signature.length);
             return this;
         }
 
         public DecoderBuilder rawToken(List<String> rawToken) {
             checkNotNull(rawToken);
             checkArgument(rawToken.size() == 3);
-            this.rawToken = Optional.of((List<String>) ImmutableList.copyOf(rawToken));
+            this.rawToken = ImmutableList.copyOf(rawToken);
             return this;
         }
     }
@@ -181,7 +190,7 @@ public class JsonWebToken {
         public JsonWebToken build() {
             checkNotNull(claim, "can not build a token without a JWT header");
             checkNotNull(header, "can not build a token without a JWT claim");
-            return new JsonWebToken(header, claim, Optional.<byte[]>absent(), Optional.<List<String>>absent());
+            return new JsonWebToken(header, claim, null, null);
         }
     }
 

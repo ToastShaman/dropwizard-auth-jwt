@@ -21,7 +21,7 @@ public class HmacVerifier {
     }
 
     public void verifySignature(JsonWebToken token) {
-        checkArgument(token.getRawToken().isPresent());
+        checkNotNull(token.getRawToken());
         checkNotNull(token.getSignature());
         checkArgument(token.getSignature().length > 0);
 
@@ -34,7 +34,7 @@ public class HmacVerifier {
     }
 
     private byte[] calculateSignatureFor(JsonWebToken token) {
-        final List<String> pieces = token.getRawToken().get();
+        final List<String> pieces = token.getRawToken();
         return hmac.doFinal(bytesOf(concatenate(pieces)));
     }
 

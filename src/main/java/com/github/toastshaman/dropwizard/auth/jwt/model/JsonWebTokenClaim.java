@@ -4,11 +4,11 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
 import org.joda.time.DateTime;
 
 import java.util.Map;
+import java.util.Objects;
 
 import static com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion.NON_NULL;
 import static com.google.common.base.Preconditions.checkArgument;
@@ -138,17 +138,17 @@ public class JsonWebTokenClaim {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final JsonWebTokenClaim that = (JsonWebTokenClaim) o;
-        return Objects.equal(iss, that.iss) &&
-            Objects.equal(exp, that.exp) &&
-            Objects.equal(iat, that.iat) &&
-            Objects.equal(nbf, that.nbf) &&
-            Objects.equal(sub, that.sub) &&
-            Objects.equal(params, that.params);
+        return Objects.equals(iss, that.iss) &&
+            Objects.equals(exp, that.exp) &&
+            Objects.equals(iat, that.iat) &&
+            Objects.equals(nbf, that.nbf) &&
+            Objects.equals(sub, that.sub) &&
+            Objects.equals(params, that.params);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(iss, exp, iat, nbf, sub, params);
+        return Objects.hash(iss, exp, iat, nbf, sub, params);
     }
 
     public static class Builder {
