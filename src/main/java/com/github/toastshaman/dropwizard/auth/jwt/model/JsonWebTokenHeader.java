@@ -2,6 +2,7 @@ package com.github.toastshaman.dropwizard.auth.jwt.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.google.common.base.Objects;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import java.util.Map;
@@ -61,6 +62,20 @@ public class JsonWebTokenHeader {
      */
     public String type() {
         return typ;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final JsonWebTokenHeader that = (JsonWebTokenHeader) o;
+        return Objects.equal(typ, that.typ) &&
+            Objects.equal(alg, that.alg);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(typ, alg);
     }
 
     public static class Builder {

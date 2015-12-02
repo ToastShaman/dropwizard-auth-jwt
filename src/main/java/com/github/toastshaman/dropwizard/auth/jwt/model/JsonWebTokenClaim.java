@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
 import org.joda.time.DateTime;
 
@@ -130,6 +131,24 @@ public class JsonWebTokenClaim {
 
     public Object getParameter(String key) {
         return params.get(key);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final JsonWebTokenClaim that = (JsonWebTokenClaim) o;
+        return Objects.equal(iss, that.iss) &&
+            Objects.equal(exp, that.exp) &&
+            Objects.equal(iat, that.iat) &&
+            Objects.equal(nbf, that.nbf) &&
+            Objects.equal(sub, that.sub) &&
+            Objects.equal(params, that.params);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(iss, exp, iat, nbf, sub, params);
     }
 
     public static class Builder {

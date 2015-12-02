@@ -6,7 +6,7 @@
 
     <groupId>com.github.toastshaman</groupId>
     <artifactId>dropwizard-auth-jwt</artifactId>
-    <version>0.9.1-0</version>
+    <version>0.9.1-1-SNAPSHOT</version>
     <name>dropwizard-auth-jwt</name>
     <description>
         An implementation of the JSON Web Token (JWT) draft-ietf-oauth-json-web-token-20 for Dropwizard.
@@ -85,6 +85,18 @@
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
             <version>2.1.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-guava</artifactId>
+            <version>2.0.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>1.10.19</version>
             <scope>test</scope>
         </dependency>
         <dependency>

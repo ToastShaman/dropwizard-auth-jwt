@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.toastshaman.dropwizard.auth.jwt.exceptions.JsonWebTokenException;
 import com.github.toastshaman.dropwizard.auth.jwt.exceptions.MalformedJsonWebTokenException;
 import com.google.common.base.Joiner;
+import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 
@@ -85,6 +86,22 @@ public class JsonWebToken {
 
     public Optional<List<String>> getRawToken() {
         return rawToken;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final JsonWebToken that = (JsonWebToken) o;
+        return Objects.equal(header, that.header) &&
+            Objects.equal(claim, that.claim) &&
+            Objects.equal(signature, that.signature) &&
+            Objects.equal(rawToken, that.rawToken);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(header, claim, signature, rawToken);
     }
 
     public static class DecoderBuilder {
