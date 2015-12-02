@@ -10,6 +10,9 @@ The claims in a JWT are encoded as a JSON object that is digitally signed using 
 
 Check out http://jwt.io/
 
+## What's new in v0.9.1-1
+* Added support for CachingAuthenticator.
+
 ## What's new in v0.9.1-0
 * Added support for Dropwizard 9.x.
 * Support for extracting JWT tokens from cookies.
@@ -23,7 +26,7 @@ For Dropwizard 0.9.1 use:
 <dependency>
     <groupId>com.github.toastshaman</groupId>
     <artifactId>dropwizard-auth-jwt</artifactId>
-    <version>0.9.1-0</version>
+    <version>0.9.1-1</version>
 </dependency>
 ```
 
