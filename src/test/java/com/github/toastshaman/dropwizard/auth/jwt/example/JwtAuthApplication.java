@@ -78,6 +78,6 @@ public class JwtAuthApplication extends Application<MyConfiguration> {
     }
 
     public static void main(String[] args) throws Exception {
-        new JwtAuthApplication().run(new String[]{"server"});
+        new JwtAuthApplication().run("server");
     }
 }

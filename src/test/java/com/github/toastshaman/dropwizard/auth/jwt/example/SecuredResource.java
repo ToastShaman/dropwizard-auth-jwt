@@ -10,6 +10,7 @@ import org.joda.time.DateTime;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import java.security.Principal;
 import java.util.Map;
 
 import static java.util.Collections.singletonMap;
@@ -26,8 +27,8 @@ public class SecuredResource {
     }
 
     @GET
-    @Path("/generate-token")
-    public Map<String, String> generate() {
+    @Path("/generate-expired-token")
+    public Map<String, String> generateExpiredToken() {
         final HmacSHA512Signer signer = new HmacSHA512Signer(tokenSecret);
         final JsonWebToken token = JsonWebToken.builder()
             .header(JsonWebTokenHeader.HS512())
@@ -41,8 +42,23 @@ public class SecuredResource {
     }
 
     @GET
+    @Path("/generate-valid-token")
+    public Map<String, String> generateValidToken() {
+        final HmacSHA512Signer signer = new HmacSHA512Signer(tokenSecret);
+        final JsonWebToken token = JsonWebToken.builder()
+            .header(JsonWebTokenHeader.HS512())
+            .claim(JsonWebTokenClaim.builder()
+                .subject("good-guy")
+                .issuedAt(DateTime.now())
+                .build())
+            .build();
+        final String signedToken = signer.sign(token);
+        return singletonMap("token", signedToken);
+    }
+
+    @GET
     @Path("/check-token")
-    public Map<String, String> get(@Auth User user) {
-        return singletonMap("username", user.getUsername());
+    public Map<String, String> get(@Auth Principal user) {
+        return singletonMap("username", user.getName());
     }
 }

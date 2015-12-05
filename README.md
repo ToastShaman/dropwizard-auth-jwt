@@ -42,7 +42,26 @@ For Dropwizard 0.8.1 use:
 
 ## Example
 See this [code example](https://github.com/ToastShaman/dropwizard-auth-jwt/tree/master/src/test/java/com/github/toastshaman/dropwizard/auth/jwt/example) 
-if you want to use this code your dropwizard application.
+if you want to use this code your dropwizard application. Once you have started the example application here are some 
+sample requests to generate a valid and an expired token:
+
+```
+curl -X GET -H "Cache-Control: no-cache" 'http://localhost:8080/jwt/generate-valid-token'
+```
+
+or you can create an invalid token instead to see a failure case with: 
+
+```
+curl -X GET -H "Cache-Control: no-cache" 'http://localhost:8080/jwt/generate-expired-token'
+```
+
+Once you have a token, you can send it to the following endpoint to get some information about the logged in user: fix(
+
+```
+curl -X GET \
+-H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE0NDkzMTQwOTUsInN1YiI6Imdvb2QtZ3V5In0.oFXdelQECJrw6_e4gR1HU3ljFvY8zmf2EHDsBnnea7n2UDBipmNDbx3bw-Bzzq-FwtEO6qzageK2jbJxM6JHbQ" \
+-H "Cache-Control: no-cache" 'http://localhost:8080/jwt/check-token'
+```
 
 ## License
 Apache License Version 2.0 
