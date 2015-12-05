@@ -55,7 +55,7 @@ or you can create an invalid token instead to see a failure case with:
 curl -X GET -H "Cache-Control: no-cache" 'http://localhost:8080/jwt/generate-expired-token'
 ```
 
-Once you have a token, you can send it to the following endpoint to get some information about the logged in user: fix(
+Once you have a token, you can send it to the following endpoint to get some information about the logged in user:
 
 ```
 curl -X GET \
