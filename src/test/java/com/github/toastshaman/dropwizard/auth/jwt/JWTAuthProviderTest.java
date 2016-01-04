@@ -13,9 +13,10 @@ import org.junit.Test;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.core.HttpHeaders;
 
 import static com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenUtils.bytesOf;
+import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
+import static javax.ws.rs.core.HttpHeaders.WWW_AUTHENTICATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
 
@@ -40,12 +41,12 @@ public class JWTAuthProviderTest extends AuthBaseTest<JWTAuthProviderTest.JWTAut
     public void respondsToInvalidSignaturesWith401() throws Exception {
         try {
             target("/test/admin").request()
-                .header(HttpHeaders.AUTHORIZATION, getPrefix() + " " + getInvalidToken())
+                .header(AUTHORIZATION, getPrefix() + " " + getInvalidToken())
                 .get(String.class);
             failBecauseExceptionWasNotThrown(WebApplicationException.class);
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatus()).isEqualTo(401);
-            assertThat(e.getResponse().getHeaders().get(HttpHeaders.WWW_AUTHENTICATE))
+            assertThat(e.getResponse().getHeaders().get(WWW_AUTHENTICATE))
                 .containsOnly(getPrefix() + " realm=\"realm\"");
         }
     }
@@ -54,12 +55,12 @@ public class JWTAuthProviderTest extends AuthBaseTest<JWTAuthProviderTest.JWTAut
     public void respondsToExpiredTokensWith401() throws Exception {
         try {
             target("/test/admin").request()
-                .header(HttpHeaders.AUTHORIZATION, getPrefix() + " " + getOrdinaryGuyExpiredToken())
+                .header(AUTHORIZATION, getPrefix() + " " + getOrdinaryGuyExpiredToken())
                 .get(String.class);
             failBecauseExceptionWasNotThrown(WebApplicationException.class);
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatus()).isEqualTo(401);
-            assertThat(e.getResponse().getHeaders().get(HttpHeaders.WWW_AUTHENTICATE))
+            assertThat(e.getResponse().getHeaders().get(WWW_AUTHENTICATE))
                 .containsOnly(getPrefix() + " realm=\"realm\"");
         }
     }

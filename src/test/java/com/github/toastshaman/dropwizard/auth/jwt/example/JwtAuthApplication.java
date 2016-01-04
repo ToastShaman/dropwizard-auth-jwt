@@ -7,7 +7,6 @@ import com.github.toastshaman.dropwizard.auth.jwt.hmac.HmacSHA512Verifier;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
 import com.github.toastshaman.dropwizard.auth.jwt.parser.DefaultJsonWebTokenParser;
 import com.github.toastshaman.dropwizard.auth.jwt.validator.ExpiryValidator;
-import com.google.common.base.Optional;
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
@@ -17,6 +16,7 @@ import io.dropwizard.setup.Environment;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 
 import java.security.Principal;
+import java.util.Optional;
 
 /**
  * A sample dropwizard application that shows how to set up the JWT Authentication provider.
@@ -64,16 +64,11 @@ public class JwtAuthApplication extends Application<MyConfiguration> {
             expiryValidator.validate(token);
 
             if ("good-guy".equals(token.claim().subject())) {
-                final Principal principal = new Principal() {
-                    @Override
-                    public String getName() {
-                        return "good-guy";
-                    }
-                };
+                final Principal principal = () -> "good-guy";
                 return Optional.of(principal);
             }
 
-            return Optional.absent();
+            return Optional.empty();
         }
     }
 

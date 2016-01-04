@@ -2,8 +2,8 @@ sudo: false
 language: java
 install: mvn install -DskipTests=true -Dgpg.skip=true
 jdk:
-  - oraclejdk7
-  - openjdk7
+  - oraclejdk8
+  - openjdk8
 cache:
   directories:
     - $HOME/.m2

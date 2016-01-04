@@ -2,8 +2,6 @@ package com.github.toastshaman.dropwizard.auth.jwt;
 
 import com.github.toastshaman.dropwizard.auth.jwt.exceptions.JsonWebTokenException;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
-import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
 import io.dropwizard.auth.AuthFilter;
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
@@ -16,12 +14,15 @@ import javax.ws.rs.Priorities;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Cookie;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.SecurityContext;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.Map;
+import java.util.Optional;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 
 @Priority(Priorities.AUTHENTICATION)
 public class JWTAuthFilter<P extends Principal> extends AuthFilter<JsonWebToken, P> {
@@ -98,11 +99,11 @@ public class JWTAuthFilter<P extends Principal> extends AuthFilter<JsonWebToken,
         }
 
         final Optional<String> cookieToken = getTokenFromCookie(requestContext);
-        return cookieToken.isPresent() ? cookieToken : Optional.<String>absent();
+        return cookieToken.isPresent() ? cookieToken : Optional.empty();
     }
 
     private Optional<String> getTokenFromHeader(MultivaluedMap<String, String> headers) {
-        final String header = headers.getFirst(HttpHeaders.AUTHORIZATION);
+        final String header = headers.getFirst(AUTHORIZATION);
         if (header != null) {
             int space = header.indexOf(' ');
             if (space > 0) {
@@ -114,7 +115,7 @@ public class JWTAuthFilter<P extends Principal> extends AuthFilter<JsonWebToken,
             }
         }
 
-        return Optional.absent();
+        return Optional.empty();
     }
 
     public Optional<String> getTokenFromCookie(ContainerRequestContext requestContext) {
@@ -126,7 +127,7 @@ public class JWTAuthFilter<P extends Principal> extends AuthFilter<JsonWebToken,
             return Optional.of(rawToken);
         }
 
-        return Optional.absent();
+        return Optional.empty();
     }
 
     /**
@@ -158,8 +159,8 @@ public class JWTAuthFilter<P extends Principal> extends AuthFilter<JsonWebToken,
 
         @Override
         protected JWTAuthFilter<P> newInstance() {
-            Preconditions.checkArgument(parser != null, "JsonWebTokenParser is not set");
-            Preconditions.checkArgument(verifier != null, "JsonWebTokenVerifier is not set");
+            checkArgument(parser != null, "JsonWebTokenParser is not set");
+            checkArgument(verifier != null, "JsonWebTokenVerifier is not set");
             return new JWTAuthFilter<>(parser, verifier, cookieName);
         }
     }

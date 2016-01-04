@@ -2,7 +2,6 @@ package com.github.toastshaman.dropwizard.auth.jwt;
 
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
 import com.github.toastshaman.dropwizard.auth.jwt.validator.ExpiryValidator;
-import com.google.common.base.Optional;
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
 import io.dropwizard.auth.Authorizer;
@@ -10,6 +9,7 @@ import io.dropwizard.auth.PrincipalImpl;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 public class AuthUtil {
 
@@ -25,7 +25,7 @@ public class AuthUtil {
                 if ("bad-guy".equals(username)) {
                     throw new AuthenticationException("CRAP");
                 }
-                return Optional.absent();
+                return Optional.empty();
             }
         };
     }
