@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/ToastShaman/dropwizard-auth-jwt.svg?branch=master)](https://travis-ci.org/ToastShaman/dropwizard-auth-jwt)
+[![Maven Central](https://img.shields.io/maven-central/v/com.github.toastshaman/dropwizard-auth-jwt.svg)](http://mvnrepository.com/artifact/com.github.toastshaman/dropwizard-auth-jwt)
 
 # dropwizard-auth-jwt
 
