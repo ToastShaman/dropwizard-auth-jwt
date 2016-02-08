@@ -15,6 +15,7 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.Optional;
 
@@ -35,21 +36,21 @@ public class JwtAuthApplication extends Application<MyConfiguration> {
         final JsonWebTokenParser tokenParser = new DefaultJsonWebTokenParser();
         final HmacSHA512Verifier tokenVerifier = new HmacSHA512Verifier(configuration.getJwtTokenSecret());
         environment.jersey().register(new AuthDynamicFeature(
-                new JWTAuthFilter.Builder<>()
+                new JWTAuthFilter.Builder<MyUser>()
                         .setTokenParser(tokenParser)
                         .setTokenVerifier(tokenVerifier)
                         .setRealm("realm")
                         .setPrefix("Bearer")
-                        .setAuthenticator(new JwtAuthApplication.ExampleAuthenticator())
+                        .setAuthenticator(new ExampleAuthenticator())
                         .buildAuthFilter()));
         environment.jersey().register(new AuthValueFactoryProvider.Binder<>(Principal.class));
         environment.jersey().register(RolesAllowedDynamicFeature.class);
         environment.jersey().register(new SecuredResource(configuration.getJwtTokenSecret()));
     }
 
-    private static class ExampleAuthenticator implements Authenticator<JsonWebToken, Principal> {
+    private static class ExampleAuthenticator implements Authenticator<JsonWebToken, MyUser> {
         @Override
-        public Optional<Principal> authenticate(JsonWebToken token) {
+        public Optional<MyUser> authenticate(JsonWebToken token) {
             final JsonWebTokenValidator expiryValidator = new ExpiryValidator();
 
             // Provide your own implementation to lookup users based on the principal attribute in the
@@ -64,8 +65,7 @@ public class JwtAuthApplication extends Application<MyConfiguration> {
             expiryValidator.validate(token);
 
             if ("good-guy".equals(token.claim().subject())) {
-                final Principal principal = () -> "good-guy";
-                return Optional.of(principal);
+                return Optional.of(new MyUser(BigDecimal.ONE, "good-guy"));
             }
 
             return Optional.empty();
