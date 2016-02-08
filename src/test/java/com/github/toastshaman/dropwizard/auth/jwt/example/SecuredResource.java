@@ -4,6 +4,7 @@ import com.github.toastshaman.dropwizard.auth.jwt.hmac.HmacSHA512Signer;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebTokenClaim;
 import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebTokenHeader;
+import com.google.common.collect.ImmutableMap;
 import io.dropwizard.auth.Auth;
 import org.joda.time.DateTime;
 
@@ -58,7 +59,7 @@ public class SecuredResource {
 
     @GET
     @Path("/check-token")
-    public Map<String, String> get(@Auth Principal user) {
-        return singletonMap("username", user.getName());
+    public Map<String, Object> get(@Auth Principal user) {
+        return ImmutableMap.<String, Object>of("username", user.getName(), "id", ((MyUser) user).getId());
     }
 }
