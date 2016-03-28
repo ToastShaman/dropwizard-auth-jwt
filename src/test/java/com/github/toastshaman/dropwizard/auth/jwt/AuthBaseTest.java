@@ -2,7 +2,6 @@ package com.github.toastshaman.dropwizard.auth.jwt;
 
 import io.dropwizard.jersey.DropwizardResourceConfig;
 import io.dropwizard.logging.BootstrapLogging;
-import org.glassfish.jersey.servlet.ServletProperties;
 import org.glassfish.jersey.test.DeploymentContext;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.ServletDeploymentContext;
@@ -15,8 +14,10 @@ import org.junit.Test;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.HttpHeaders;
 
+import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
+import static org.glassfish.jersey.servlet.ServletProperties.JAXRS_APPLICATION_CLASS;
 
 public abstract class AuthBaseTest<T extends DropwizardResourceConfig> extends JerseyTest {
 
@@ -37,23 +38,22 @@ public abstract class AuthBaseTest<T extends DropwizardResourceConfig> extends J
     }
 
     protected abstract DropwizardResourceConfig getDropwizardResourceConfig();
-
     protected abstract Class<T> getDropwizardResourceConfigClass();
-
     protected abstract String getPrefix();
 
     protected abstract String getOrdinaryGuyValidToken();
-
+    protected abstract String getOrdinaryGuyExpiredToken();
     protected abstract String getGoodGuyValidToken();
-
     protected abstract String getBadGuyToken();
+    protected abstract String getInvalidToken();
 
     @Override
     protected DeploymentContext configureDeployment() {
         forceSet(TestProperties.CONTAINER_PORT, "0");
+
         return ServletDeploymentContext.builder(getDropwizardResourceConfig())
-                .initParam(ServletProperties.JAXRS_APPLICATION_CLASS, getDropwizardResourceConfigClass().getName())
-                .build();
+            .initParam(JAXRS_APPLICATION_CLASS, getDropwizardResourceConfigClass().getName())
+            .build();
     }
 
     @Test
@@ -64,23 +64,35 @@ public abstract class AuthBaseTest<T extends DropwizardResourceConfig> extends J
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatus()).isEqualTo(401);
             assertThat(e.getResponse().getHeaders().get(HttpHeaders.WWW_AUTHENTICATE))
-                    .containsOnly(getPrefix() + " realm=\"realm\"");
+                .containsOnly(getPrefix() + " realm=\"realm\"");
         }
     }
 
     @Test
     public void resourceWithoutAuth200() {
         assertThat(target("/test/noauth").request()
-                .get(String.class))
-                .isEqualTo("hello");
+            .get(String.class))
+            .isEqualTo("hello");
     }
 
     @Test
     public void resourceWithAuthenticationWithoutAuthorizationWithCorrectCredentials200() {
         assertThat(target("/test/profile").request()
-                .header(HttpHeaders.AUTHORIZATION, getPrefix() + " " + getOrdinaryGuyValidToken())
-                .get(String.class))
-                .isEqualTo("'" + ORDINARY_USER + "' has user privileges");
+            .header(AUTHORIZATION, getPrefix() + " " + getOrdinaryGuyValidToken())
+            .get(String.class))
+            .isEqualTo("'" + ORDINARY_USER + "' has user privileges");
+    }
+
+    @Test
+    public void respondsToExpiredCredentialsWith401() {
+        try {
+            target("/test/profile").request()
+                .header(AUTHORIZATION, getPrefix() + " " + getOrdinaryGuyExpiredToken())
+                .get(String.class);
+            failBecauseExceptionWasNotThrown(WebApplicationException.class);
+        } catch (WebApplicationException e) {
+            assertThat(e.getResponse().getStatus()).isEqualTo(401);
+        }
     }
 
     @Test
@@ -91,7 +103,7 @@ public abstract class AuthBaseTest<T extends DropwizardResourceConfig> extends J
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatus()).isEqualTo(401);
             assertThat(e.getResponse().getHeaders().get(HttpHeaders.WWW_AUTHENTICATE))
-                    .containsOnly(getPrefix() + " realm=\"realm\"");
+                .containsOnly(getPrefix() + " realm=\"realm\"");
         }
     }
 
@@ -99,14 +111,13 @@ public abstract class AuthBaseTest<T extends DropwizardResourceConfig> extends J
     public void resourceWithAuthorizationPrincipalIsNotAuthorized403() {
         try {
             target("/test/admin").request()
-                    .header(HttpHeaders.AUTHORIZATION, getPrefix() + " " + getOrdinaryGuyValidToken())
-                    .get(String.class);
+                .header(AUTHORIZATION, getPrefix() + " " + getOrdinaryGuyValidToken())
+                .get(String.class);
             failBecauseExceptionWasNotThrown(WebApplicationException.class);
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatus()).isEqualTo(403);
         }
     }
-
 
     @Test
     public void resourceWithDenyAllAndNoAuth401() {
@@ -122,8 +133,8 @@ public abstract class AuthBaseTest<T extends DropwizardResourceConfig> extends J
     public void resourceWithDenyAllAndAuth403() {
         try {
             target("/test/denied").request()
-                    .header(HttpHeaders.AUTHORIZATION, getPrefix() + " " + getGoodGuyValidToken())
-                    .get(String.class);
+                .header(AUTHORIZATION, getPrefix() + " " + getGoodGuyValidToken())
+                .get(String.class);
             failBecauseExceptionWasNotThrown(WebApplicationException.class);
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatus()).isEqualTo(403);
@@ -133,39 +144,38 @@ public abstract class AuthBaseTest<T extends DropwizardResourceConfig> extends J
     @Test
     public void transformsCredentialsToPrincipals() throws Exception {
         assertThat(target("/test/admin").request()
-                .header(HttpHeaders.AUTHORIZATION, getPrefix() + " " + getGoodGuyValidToken())
-                .get(String.class))
-                .isEqualTo("'" + ADMIN_USER + "' has admin privileges");
+            .header(AUTHORIZATION, getPrefix() + " " + getGoodGuyValidToken())
+            .get(String.class))
+            .isEqualTo("'" + ADMIN_USER + "' has admin privileges");
     }
 
     @Test
     public void transformsCredentialsToPrincipalsWithCookie() throws Exception {
         assertThat(target("/test/admin").request()
-                .cookie(COOKIE_NAME, getGoodGuyValidToken())
-                .get(String.class))
-                .isEqualTo("'" + ADMIN_USER + "' has admin privileges");
+            .cookie(COOKIE_NAME, getGoodGuyValidToken())
+            .get(String.class))
+            .isEqualTo("'" + ADMIN_USER + "' has admin privileges");
     }
 
     @Test
     public void transformsCredentialsToPrincipalsWhenAuthAnnotationExistsWithoutMethodAnnotation() throws Exception {
         assertThat(target("/test/implicit-permitall").request()
-                .header(HttpHeaders.AUTHORIZATION, getPrefix() + " " + getGoodGuyValidToken())
-                .get(String.class))
-                .isEqualTo("'" + ADMIN_USER + "' has user privileges");
+            .header(AUTHORIZATION, getPrefix() + " " + getGoodGuyValidToken())
+            .get(String.class))
+            .isEqualTo("'" + ADMIN_USER + "' has user privileges");
     }
-
 
     @Test
     public void respondsToNonBasicCredentialsWith401() throws Exception {
         try {
             target("/test/admin").request()
-                    .header(HttpHeaders.AUTHORIZATION, "Derp irrelevant")
-                    .get(String.class);
+                .header(AUTHORIZATION, "Derp irrelevant")
+                .get(String.class);
             failBecauseExceptionWasNotThrown(WebApplicationException.class);
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatus()).isEqualTo(401);
             assertThat(e.getResponse().getHeaders().get(HttpHeaders.WWW_AUTHENTICATE))
-                    .containsOnly(getPrefix() + " realm=\"realm\"");
+                .containsOnly(getPrefix() + " realm=\"realm\"");
         }
     }
 
@@ -173,8 +183,8 @@ public abstract class AuthBaseTest<T extends DropwizardResourceConfig> extends J
     public void respondsToExceptionsWith500() throws Exception {
         try {
             target("/test/admin").request()
-                    .header(HttpHeaders.AUTHORIZATION, getPrefix() + " " + getBadGuyToken())
-                    .get(String.class);
+                .header(AUTHORIZATION, getPrefix() + " " + getBadGuyToken())
+                .get(String.class);
             failBecauseExceptionWasNotThrown(WebApplicationException.class);
         } catch (WebApplicationException e) {
             assertThat(e.getResponse().getStatus()).isEqualTo(500);

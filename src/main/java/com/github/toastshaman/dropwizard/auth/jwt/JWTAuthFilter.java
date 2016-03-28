@@ -1,10 +1,11 @@
 package com.github.toastshaman.dropwizard.auth.jwt;
 
-import com.github.toastshaman.dropwizard.auth.jwt.exceptions.JsonWebTokenException;
-import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
 import io.dropwizard.auth.AuthFilter;
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
+import org.jose4j.jwt.consumer.InvalidJwtException;
+import org.jose4j.jwt.consumer.JwtConsumer;
+import org.jose4j.jwt.consumer.JwtContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,21 +22,19 @@ import java.security.Principal;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 
 @Priority(Priorities.AUTHENTICATION)
-public class JWTAuthFilter<P extends Principal> extends AuthFilter<JsonWebToken, P> {
+public class JwtAuthFilter<P extends Principal> extends AuthFilter<JwtContext, P> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JWTAuthFilter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthFilter.class);
 
-    private final JsonWebTokenVerifier tokenVerifier;
-    private final JsonWebTokenParser tokenParser;
+    private final JwtConsumer consumer;
     private final String cookieName;
 
-    private JWTAuthFilter(JsonWebTokenParser tokenParser, JsonWebTokenVerifier tokenVerifier, String cookieName) {
-        this.tokenParser = tokenParser;
-        this.tokenVerifier = tokenVerifier;
+    private JwtAuthFilter(JwtConsumer consumer, String cookieName) {
+        this.consumer = consumer;
         this.cookieName = cookieName;
     }
 
@@ -45,8 +44,8 @@ public class JWTAuthFilter<P extends Principal> extends AuthFilter<JsonWebToken,
 
         if (optionalToken.isPresent()) {
             try {
-                final JsonWebToken token = verifyToken(optionalToken.get());
-                final Optional<P> principal = authenticator.authenticate(token);
+                final JwtContext jwtContext = verifyToken(optionalToken.get());
+                final Optional<P> principal = authenticator.authenticate(jwtContext);
 
                 if (principal.isPresent()) {
                     requestContext.setSecurityContext(new SecurityContext() {
@@ -74,7 +73,7 @@ public class JWTAuthFilter<P extends Principal> extends AuthFilter<JsonWebToken,
                     });
                     return;
                 }
-            } catch (JsonWebTokenException ex) {
+            } catch (InvalidJwtException ex) {
                 LOGGER.warn("Error decoding credentials: " + ex.getMessage(), ex);
             } catch (AuthenticationException ex) {
                 LOGGER.warn("Error authenticating credentials", ex);
@@ -85,13 +84,11 @@ public class JWTAuthFilter<P extends Principal> extends AuthFilter<JsonWebToken,
         throw new WebApplicationException(unauthorizedHandler.buildResponse(prefix, realm));
     }
 
-    private JsonWebToken verifyToken(String rawToken) {
-        final JsonWebToken token = tokenParser.parse(rawToken);
-        tokenVerifier.verifySignature(token);
-        return token;
+    private JwtContext verifyToken(String rawToken) throws InvalidJwtException {
+        return consumer.process(rawToken);
     }
 
-    public Optional<String> getTokenFromCookieOrHeader(ContainerRequestContext requestContext) {
+    private Optional<String> getTokenFromCookieOrHeader(ContainerRequestContext requestContext) {
         final Optional<String> headerToken = getTokenFromHeader(requestContext.getHeaders());
 
         if (headerToken.isPresent()) {
@@ -118,7 +115,7 @@ public class JWTAuthFilter<P extends Principal> extends AuthFilter<JsonWebToken,
         return Optional.empty();
     }
 
-    public Optional<String> getTokenFromCookie(ContainerRequestContext requestContext) {
+    private Optional<String> getTokenFromCookie(ContainerRequestContext requestContext) {
         final Map<String, Cookie> cookies = requestContext.getCookies();
 
         if (cookieName != null && cookies.containsKey(cookieName)) {
@@ -131,24 +128,18 @@ public class JWTAuthFilter<P extends Principal> extends AuthFilter<JsonWebToken,
     }
 
     /**
-     * Builder for {@link JWTAuthFilter}.
+     * Builder for {@link JwtAuthFilter}.
      * <p>An {@link Authenticator} must be provided during the building process.</p>
      *
      * @param <P> the principal
      */
-    public static class Builder<P extends Principal> extends AuthFilterBuilder<JsonWebToken, P, JWTAuthFilter<P>> {
+    public static class Builder<P extends Principal> extends AuthFilterBuilder<JwtContext, P, JwtAuthFilter<P>> {
 
-        private JsonWebTokenParser parser;
-        private JsonWebTokenVerifier verifier;
+        private JwtConsumer consumer;
         private String cookieName;
 
-        public Builder<P> setTokenParser(JsonWebTokenParser parser) {
-            this.parser = parser;
-            return this;
-        }
-
-        public Builder<P> setTokenVerifier(JsonWebTokenVerifier verifier) {
-            this.verifier = verifier;
+        public Builder<P> setJwtConsumer(JwtConsumer consumer) {
+            this.consumer = consumer;
             return this;
         }
 
@@ -158,10 +149,9 @@ public class JWTAuthFilter<P extends Principal> extends AuthFilter<JsonWebToken,
         }
 
         @Override
-        protected JWTAuthFilter<P> newInstance() {
-            checkArgument(parser != null, "JsonWebTokenParser is not set");
-            checkArgument(verifier != null, "JsonWebTokenVerifier is not set");
-            return new JWTAuthFilter<>(parser, verifier, cookieName);
+        protected JwtAuthFilter<P> newInstance() {
+            checkNotNull(consumer, "JwtConsumer is not set");
+            return new JwtAuthFilter<>(consumer, cookieName);
         }
     }
 }

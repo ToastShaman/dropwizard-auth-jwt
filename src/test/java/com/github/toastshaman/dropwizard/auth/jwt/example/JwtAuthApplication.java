@@ -1,12 +1,6 @@
 package com.github.toastshaman.dropwizard.auth.jwt.example;
 
-import com.github.toastshaman.dropwizard.auth.jwt.JWTAuthFilter;
-import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenParser;
-import com.github.toastshaman.dropwizard.auth.jwt.JsonWebTokenValidator;
-import com.github.toastshaman.dropwizard.auth.jwt.hmac.HmacSHA512Verifier;
-import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
-import com.github.toastshaman.dropwizard.auth.jwt.parser.DefaultJsonWebTokenParser;
-import com.github.toastshaman.dropwizard.auth.jwt.validator.ExpiryValidator;
+import com.github.toastshaman.dropwizard.auth.jwt.JwtAuthFilter;
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
@@ -14,10 +8,18 @@ import io.dropwizard.auth.Authenticator;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
+import org.jose4j.jwt.MalformedClaimException;
+import org.jose4j.jwt.consumer.InvalidJwtException;
+import org.jose4j.jwt.consumer.JwtConsumer;
+import org.jose4j.jwt.consumer.JwtConsumerBuilder;
+import org.jose4j.jwt.consumer.JwtContext;
+import org.jose4j.keys.HmacKey;
 
-import java.math.BigDecimal;
+import java.security.Key;
 import java.security.Principal;
 import java.util.Optional;
+
+import static java.math.BigDecimal.ONE;
 
 /**
  * A sample dropwizard application that shows how to set up the JWT Authentication provider.
@@ -33,26 +35,32 @@ public class JwtAuthApplication extends Application<MyConfiguration> {
 
     @Override
     public void run(MyConfiguration configuration, Environment environment) throws Exception {
-        final JsonWebTokenParser tokenParser = new DefaultJsonWebTokenParser();
-        final HmacSHA512Verifier tokenVerifier = new HmacSHA512Verifier(configuration.getJwtTokenSecret());
+        final Key key = new HmacKey(configuration.getJwtTokenSecret());
+
+        final JwtConsumer consumer = new JwtConsumerBuilder()
+            .setExpectedIssuer("Issuer") // whom the JWT needs to have been issued by
+            .setExpectedAudience("Audience") // whom the JWT needs to have been issued by
+            .setVerificationKey(key) // verify the signature with the public key
+            .setRelaxVerificationKeyValidation() // relaxes key length requirement
+            .build();// create the JwtConsumer instance
+
         environment.jersey().register(new AuthDynamicFeature(
-                new JWTAuthFilter.Builder<MyUser>()
-                        .setTokenParser(tokenParser)
-                        .setTokenVerifier(tokenVerifier)
-                        .setRealm("realm")
-                        .setPrefix("Bearer")
-                        .setAuthenticator(new ExampleAuthenticator())
-                        .buildAuthFilter()));
+            new JwtAuthFilter.Builder<MyUser>()
+                .setJwtConsumer(consumer)
+                .setRealm("realm")
+                .setPrefix("Bearer")
+                .setAuthenticator(new ExampleAuthenticator())
+                .buildAuthFilter()));
+
         environment.jersey().register(new AuthValueFactoryProvider.Binder<>(Principal.class));
         environment.jersey().register(RolesAllowedDynamicFeature.class);
         environment.jersey().register(new SecuredResource(configuration.getJwtTokenSecret()));
     }
 
-    private static class ExampleAuthenticator implements Authenticator<JsonWebToken, MyUser> {
-        @Override
-        public Optional<MyUser> authenticate(JsonWebToken token) {
-            final JsonWebTokenValidator expiryValidator = new ExpiryValidator();
+    private static class ExampleAuthenticator implements Authenticator<JwtContext, MyUser> {
 
+        @Override
+        public Optional<MyUser> authenticate(JwtContext context) {
             // Provide your own implementation to lookup users based on the principal attribute in the
             // JWT Token. E.g.: lookup users from a database etc.
             // This method will be called once the token's signature has been verified
@@ -62,13 +70,22 @@ public class JwtAuthApplication extends Application<MyConfiguration> {
 
             // All JsonWebTokenExceptions will result in a 401 Unauthorized response.
 
-            expiryValidator.validate(token);
+            try {
+                new JwtConsumerBuilder()
+                    .setRequireExpirationTime() // the JWT must have an expiration time
+                    .setAllowedClockSkewInSeconds(30) // allow some leeway in validating time based claims to account for clock skew
+                    .setRequireSubject() // the JWT must have a subject claim
+                    .build()
+                    .processContext(context);
 
-            if ("good-guy".equals(token.claim().subject())) {
-                return Optional.of(new MyUser(BigDecimal.ONE, "good-guy"));
+                final String subject = context.getJwtClaims().getSubject();
+                if ("good-guy".equals(subject)) {
+                    return Optional.of(new MyUser(ONE, "good-guy"));
+                }
+                return Optional.empty();
+            } catch (MalformedClaimException | InvalidJwtException e) {
+                return Optional.empty();
             }
-
-            return Optional.empty();
         }
     }
 

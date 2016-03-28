@@ -15,15 +15,15 @@ import java.security.Principal;
 @Produces(MediaType.TEXT_PLAIN)
 public class AuthResource {
 
-    @RolesAllowed({"ADMIN"})
     @GET
+    @RolesAllowed({"ADMIN"})
     @Path("admin")
     public String show(@Auth Principal principal) {
         return "'" + principal.getName() + "' has admin privileges";
     }
 
-    @PermitAll
     @GET
+    @PermitAll
     @Path("profile")
     public String showForEveryUser(@Auth Principal principal) {
         return "'" + principal.getName() + "' has user privileges";
@@ -41,8 +41,8 @@ public class AuthResource {
         return "hello";
     }
 
-    @DenyAll
     @GET
+    @DenyAll
     @Path("denied")
     public String denied() {
         return "denied";

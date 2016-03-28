@@ -16,7 +16,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <dropwizard.version>1.0.0-SNAPSHOT</dropwizard.version>
+        <dropwizard.version>1.0.0-rc2-SNAPSHOT</dropwizard.version>
     </properties>
 
     <licenses>
@@ -74,6 +74,11 @@
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-auth</artifactId>
             <version>${dropwizard.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bitbucket.b_c</groupId>
+            <artifactId>jose4j</artifactId>
+            <version>0.5.0</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
