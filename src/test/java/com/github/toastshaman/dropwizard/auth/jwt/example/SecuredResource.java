@@ -1,12 +1,12 @@
 package com.github.toastshaman.dropwizard.auth.jwt.example;
 
-import com.github.toastshaman.dropwizard.auth.jwt.hmac.HmacSHA512Signer;
-import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebToken;
-import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebTokenClaim;
-import com.github.toastshaman.dropwizard.auth.jwt.model.JsonWebTokenHeader;
+import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 import io.dropwizard.auth.Auth;
-import org.joda.time.DateTime;
+import org.jose4j.jws.JsonWebSignature;
+import org.jose4j.jwt.JwtClaims;
+import org.jose4j.keys.HmacKey;
+import org.jose4j.lang.JoseException;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -16,6 +16,7 @@ import java.util.Map;
 
 import static java.util.Collections.singletonMap;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static org.jose4j.jws.AlgorithmIdentifiers.HMAC_SHA256;
 
 @Path("/jwt")
 @Produces(APPLICATION_JSON)
@@ -30,31 +31,37 @@ public class SecuredResource {
     @GET
     @Path("/generate-expired-token")
     public Map<String, String> generateExpiredToken() {
-        final HmacSHA512Signer signer = new HmacSHA512Signer(tokenSecret);
-        final JsonWebToken token = JsonWebToken.builder()
-            .header(JsonWebTokenHeader.HS512())
-            .claim(JsonWebTokenClaim.builder()
-                .subject("good-guy")
-                .issuedAt(new DateTime().plusHours(1))
-                .build())
-            .build();
-        final String signedToken = signer.sign(token);
-        return singletonMap("token", signedToken);
+        final JwtClaims claims = new JwtClaims();
+        claims.setExpirationTimeMinutesInTheFuture(-20);
+        claims.setSubject("good-guy");
+
+        final JsonWebSignature jws = new JsonWebSignature();
+        jws.setPayload(claims.toJson());
+        jws.setAlgorithmHeaderValue(HMAC_SHA256);
+        jws.setKey(new HmacKey(tokenSecret));
+
+        try {
+            return singletonMap("token", jws.getCompactSerialization());
+        }
+        catch (JoseException e) { throw Throwables.propagate(e); }
     }
 
     @GET
     @Path("/generate-valid-token")
     public Map<String, String> generateValidToken() {
-        final HmacSHA512Signer signer = new HmacSHA512Signer(tokenSecret);
-        final JsonWebToken token = JsonWebToken.builder()
-            .header(JsonWebTokenHeader.HS512())
-            .claim(JsonWebTokenClaim.builder()
-                .subject("good-guy")
-                .issuedAt(DateTime.now())
-                .build())
-            .build();
-        final String signedToken = signer.sign(token);
-        return singletonMap("token", signedToken);
+        final JwtClaims claims = new JwtClaims();
+        claims.setSubject("good-guy");
+        claims.setExpirationTimeMinutesInTheFuture(30);
+
+        final JsonWebSignature jws = new JsonWebSignature();
+        jws.setPayload(claims.toJson());
+        jws.setAlgorithmHeaderValue(HMAC_SHA256);
+        jws.setKey(new HmacKey(tokenSecret));
+
+        try {
+            return singletonMap("token", jws.getCompactSerialization());
+        }
+        catch (JoseException e) { throw Throwables.propagate(e); }
     }
 
     @GET

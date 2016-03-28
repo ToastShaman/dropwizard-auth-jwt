@@ -9,13 +9,11 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.jose4j.jwt.MalformedClaimException;
-import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.jwt.consumer.JwtContext;
 import org.jose4j.keys.HmacKey;
 
-import java.security.Key;
 import java.security.Principal;
 import java.util.Optional;
 
@@ -30,19 +28,19 @@ import static java.math.BigDecimal.ONE;
 public class JwtAuthApplication extends Application<MyConfiguration> {
 
     @Override
-    public void initialize(Bootstrap<MyConfiguration> configurationBootstrap) {
-    }
+    public void initialize(Bootstrap<MyConfiguration> configurationBootstrap) {}
 
     @Override
     public void run(MyConfiguration configuration, Environment environment) throws Exception {
-        final Key key = new HmacKey(configuration.getJwtTokenSecret());
+        final byte[] key = configuration.getJwtTokenSecret();
 
         final JwtConsumer consumer = new JwtConsumerBuilder()
-            .setExpectedIssuer("Issuer") // whom the JWT needs to have been issued by
-            .setExpectedAudience("Audience") // whom the JWT needs to have been issued by
-            .setVerificationKey(key) // verify the signature with the public key
+            .setAllowedClockSkewInSeconds(30) // allow some leeway in validating time based claims to account for clock skew
+            .setRequireExpirationTime() // the JWT must have an expiration time
+            .setRequireSubject() // the JWT must have a subject claim
+            .setVerificationKey(new HmacKey(key)) // verify the signature with the public key
             .setRelaxVerificationKeyValidation() // relaxes key length requirement
-            .build();// create the JwtConsumer instance
+            .build(); // create the JwtConsumer instance
 
         environment.jersey().register(new AuthDynamicFeature(
             new JwtAuthFilter.Builder<MyUser>()
@@ -71,21 +69,13 @@ public class JwtAuthApplication extends Application<MyConfiguration> {
             // All JsonWebTokenExceptions will result in a 401 Unauthorized response.
 
             try {
-                new JwtConsumerBuilder()
-                    .setRequireExpirationTime() // the JWT must have an expiration time
-                    .setAllowedClockSkewInSeconds(30) // allow some leeway in validating time based claims to account for clock skew
-                    .setRequireSubject() // the JWT must have a subject claim
-                    .build()
-                    .processContext(context);
-
                 final String subject = context.getJwtClaims().getSubject();
                 if ("good-guy".equals(subject)) {
                     return Optional.of(new MyUser(ONE, "good-guy"));
                 }
                 return Optional.empty();
-            } catch (MalformedClaimException | InvalidJwtException e) {
-                return Optional.empty();
             }
+            catch (MalformedClaimException e) { return Optional.empty(); }
         }
     }
 
