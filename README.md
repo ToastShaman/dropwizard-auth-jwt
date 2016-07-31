@@ -11,7 +11,7 @@ The claims in a JWT are encoded as a JSON object that is digitally signed using 
 
 Check out http://jwt.io/
 
-## What's new in the *upcoming* v1.0.0 release
+## What's new in v1.0.0
 * Replaced the JWT token generation and verification with [jose4j](https://bitbucket.org/b_c/jose4j/wiki/Home). 
 
 ## What's new in v0.9.2-0
