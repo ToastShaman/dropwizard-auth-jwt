@@ -11,6 +11,9 @@ The claims in a JWT are encoded as a JSON object that is digitally signed using 
 
 Check out http://jwt.io/
 
+## What's new in v1.0.6-0
+* Updated upstream dependencies to Dropwizard 1.0.6 and jose4j to 0.5.5  
+
 ## What's new in v1.0.2-0
 * Updated upstream dependencies to Dropwizard 1.0.2 and jose4j to 0.5.2  
 
@@ -35,7 +38,7 @@ To use this library in your project you can download it from Maven Central.
 <dependency>
     <groupId>com.github.toastshaman</groupId>
     <artifactId>dropwizard-auth-jwt</artifactId>
-    <version>1.0.2-0</version>
+    <version>1.0.6-0</version>
 </dependency>
 ```
 
