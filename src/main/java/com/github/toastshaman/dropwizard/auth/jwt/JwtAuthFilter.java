@@ -90,13 +90,7 @@ public class JwtAuthFilter<P extends Principal> extends AuthFilter<JwtContext, P
 
     private Optional<String> getTokenFromCookieOrHeader(ContainerRequestContext requestContext) {
         final Optional<String> headerToken = getTokenFromHeader(requestContext.getHeaders());
-
-        if (headerToken.isPresent()) {
-            return headerToken;
-        }
-
-        final Optional<String> cookieToken = getTokenFromCookie(requestContext);
-        return cookieToken.isPresent() ? cookieToken : Optional.empty();
+        return headerToken.isPresent() ? headerToken : getTokenFromCookie(requestContext);
     }
 
     private Optional<String> getTokenFromHeader(MultivaluedMap<String, String> headers) {
