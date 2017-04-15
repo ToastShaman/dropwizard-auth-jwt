@@ -11,6 +11,9 @@ The claims in a JWT are encoded as a JSON object that is digitally signed using 
 
 Check out http://jwt.io/
 
+## What's new in v1.1.0-0
+* Updated upstream dependencies to Dropwizard 1.1.0  
+
 ## What's new in v1.0.6-0
 * Updated upstream dependencies to Dropwizard 1.0.6 and jose4j to 0.5.5  
 
