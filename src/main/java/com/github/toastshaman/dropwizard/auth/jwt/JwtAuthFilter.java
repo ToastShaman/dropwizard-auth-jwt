@@ -79,6 +79,8 @@ public class JwtAuthFilter<P extends Principal> extends AuthFilter<JwtContext, P
                 LOGGER.warn("Error authenticating credentials", ex);
                 throw new InternalServerErrorException();
             }
+        } else {
+            LOGGER.debug("No valid token received");
         }
 
         throw new WebApplicationException(unauthorizedHandler.buildResponse(prefix, realm));
