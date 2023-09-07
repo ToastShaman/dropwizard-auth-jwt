@@ -1,6 +1,6 @@
 package com.github.toastshaman.dropwizard.auth.jwt.example;
 
-import io.dropwizard.Configuration;
+import io.dropwizard.core.Configuration;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import java.io.UnsupportedEncodingException;

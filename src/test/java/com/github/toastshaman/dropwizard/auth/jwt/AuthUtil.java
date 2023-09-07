@@ -34,6 +34,6 @@ public class AuthUtil {
     }
 
     public static Authorizer<Principal> getTestAuthorizer(final String validUser, final String validRole) {
-        return (principal, role) -> principal != null && validUser.equals(principal.getName()) && validRole.equals(role);
+        return (principal, role, ctx) -> principal != null && validUser.equals(principal.getName()) && validRole.equals(role);
     }
 }
