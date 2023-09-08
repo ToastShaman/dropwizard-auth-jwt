@@ -1,6 +1,9 @@
+/*
+ * 09/07/23 Matthew Donovan
+ *  Updated imports to use jakarta.* instead of javax.* and updated code to support DropWizard 4.0.0
+ */
 package com.github.toastshaman.dropwizard.auth.jwt;
 
-import com.codahale.metrics.MetricRegistry;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
 import io.dropwizard.jersey.DropwizardResourceConfig;
