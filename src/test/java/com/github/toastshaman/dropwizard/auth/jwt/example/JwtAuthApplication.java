@@ -1,12 +1,11 @@
 package com.github.toastshaman.dropwizard.auth.jwt.example;
 
 import com.github.toastshaman.dropwizard.auth.jwt.JwtAuthFilter;
-import io.dropwizard.Application;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
 import io.dropwizard.auth.Authenticator;
-import io.dropwizard.setup.Bootstrap;
-import io.dropwizard.setup.Environment;
+import io.dropwizard.core.setup.Bootstrap;
+import io.dropwizard.core.setup.Environment;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.jose4j.jwt.MalformedClaimException;
 import org.jose4j.jwt.consumer.JwtConsumer;
@@ -25,7 +24,7 @@ import static java.math.BigDecimal.ONE;
  * The Authentication Provider will parse the tokens supplied in the "Authorization" HTTP header in each HTTP request
  * given your resource is protected with the @Auth annotation.
  */
-public class JwtAuthApplication extends Application<MyConfiguration> {
+public class JwtAuthApplication extends io.dropwizard.core.Application<MyConfiguration> {
 
     @Override
     public void initialize(Bootstrap<MyConfiguration> configurationBootstrap) {}
